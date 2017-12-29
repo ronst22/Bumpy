@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Bumpy</string>
+    <string name="title_activity_dynamic">DynamicActivity</string>
+    <string name="accident_button">Accident</string>
+    <string name="casualties">Accident with casualties?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="action_favorite">Favorite</string>
+    <string name="action_settings">Settings</string>
 </resources>
