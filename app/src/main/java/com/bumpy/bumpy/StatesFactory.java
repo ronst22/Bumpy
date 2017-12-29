@@ -7,6 +7,7 @@ package com.bumpy.bumpy;
 public class StatesFactory {
     public enum STATES {
         AMBULANCE,
+        DRIVER_INFO,
         POLICE,
         INVALID
     }
@@ -18,6 +19,10 @@ public class StatesFactory {
             case AMBULANCE:
             {
                 return new AmbulanceQuestion();
+            }
+            case DRIVER_INFO:
+            {
+                return new GetDriverInfo();
             }
         }
 
