@@ -11,12 +11,14 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.facebook.login.widget.ProfilePictureView;
 
 public class MainActivity extends AppCompatActivity {
     LoginButton loginButton;
@@ -43,7 +45,9 @@ public class MainActivity extends AppCompatActivity {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                startActivity(new Intent(MainActivity.this, MainActivity.class));
+                ProfilePictureView profilePictureView;
+                profilePictureView = (ProfilePictureView) findViewById(R.id.friendProfilePicture);
+                profilePictureView.setProfileId(loginResult.getAccessToken().getUserId());
             }
 
             @Override
@@ -54,6 +58,20 @@ public class MainActivity extends AppCompatActivity {
             public void onError(FacebookException error) {
             }
         });
+
+        AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,
+                                                       AccessToken currentAccessToken) {
+                if (currentAccessToken == null) {
+                    ProfilePictureView profilePictureView;
+                    profilePictureView = (ProfilePictureView) findViewById(R.id.friendProfilePicture);
+                    profilePictureView.setProfileId(null);
+                }
+            }
+        };
+
+        accessTokenTracker.startTracking();
     }
 
     @Override
@@ -80,6 +98,20 @@ public class MainActivity extends AppCompatActivity {
 //        Intent intent = new Intent(this, DynamicActivity.class);
         Intent intent = new Intent(this, Ambulance.class);
         intent.putExtra(DynamicActivity.STATE, StatesFactory.STATES.AMBULANCE);
+        startActivity(intent);
+    }
+
+    public void view_accidents(View view) {
+        if (!isLoggedInToFacebook())
+        {
+            Toast.makeText(getApplicationContext(),
+                    "Please login to facebook first",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+//        Intent intent = new Intent(this, DynamicActivity.class);
+        Intent intent = new Intent(this, ViewAccidentsActivity.class);
         startActivity(intent);
     }
 
