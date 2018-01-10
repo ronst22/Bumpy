@@ -118,7 +118,8 @@ public class MainActivity extends BaseBumpyActivity {
                     }
                 });
 
-                startActivity(new Intent(MainActivity.this, MainActivity.class));
+                // Not sure why this is here TODO: if bug put this line back
+//                startActivity(new Intent(MainActivity.this, MainActivity.class));
             }
 
             @Override
