@@ -4,10 +4,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+
     <uses-permission android:name="android.permission.NFC" />
-    <uses-feature
-        android:name="android.hardware.nfc"
-        android:required="false" />
+    <uses-feature android:name="android.hardware.nfc" android:required="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,10 +23,18 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech_filter" />
         </activity>
         <activity android:name=".DynamicActivity" />
         <activity android:name=".Ambulance" />
-        <activity android:name=".OtherDriverActivity"></activity>
+        <activity android:name=".OtherDriverActivity"/>
     </application>
 
 </manifest>
