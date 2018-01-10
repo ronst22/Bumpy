@@ -8,7 +8,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.telecom.Call;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,13 +15,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class Ambulance extends CallActivity {
-    public final static String AmbulanceNumber = "tel:0546500125";
+public class PoliceActivity extends CallActivity {
+
+    public final static String PoliceNumber = "tel:0508823116";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_ambulance);
+        setContentView(R.layout.activity_police);
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -31,25 +32,25 @@ public class Ambulance extends CallActivity {
         // If request is cancelled, the result arrays are empty.
         if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            MakeACall(AmbulanceNumber);
+            MakeACall(PoliceNumber );
         }
     }
 
+
     public void Yes(View view) {
-        if (ActivityCompat.checkSelfPermission(Ambulance.this,
+        if (ActivityCompat.checkSelfPermission(PoliceActivity.this,
                 Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(Ambulance.this,
+            ActivityCompat.requestPermissions(PoliceActivity.this,
                     new String[]{Manifest.permission.CALL_PHONE},
                     1);
-            return;
         }
         else {
-            MakeACall(AmbulanceNumber);
+            MakeACall(PoliceNumber );
         }
     }
 
     public void No(View view) {
-        Intent intent = new Intent(this, PoliceActivity.class);
+        Intent intent = new Intent(this, OtherDriverActivity.class);
         startActivity(intent);
     }
 }

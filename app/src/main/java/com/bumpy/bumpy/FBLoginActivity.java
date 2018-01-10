@@ -12,7 +12,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
-public class FBLoginActivity extends AppCompatActivity {
+public class FBLoginActivity extends BaseBumpyActivity {
 
     LoginButton loginButton;
     CallbackManager callbackManager;
@@ -26,8 +26,8 @@ public class FBLoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         FacebookSdk.setApplicationId("151468522166990");
         FacebookSdk.sdkInitialize(getApplicationContext());
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fblogin);
+        super.onCreate(savedInstanceState);
 
         if (isLoggedInToFacebook())
         {
