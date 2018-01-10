@@ -7,4 +7,10 @@
     <string name="no">No</string>
     <string name="action_favorite">Favorite</string>
     <string name="action_settings">Settings</string>
+    <string name="ambulance">Do you need an ambulance?</string>
+    <string name="Confirm">Confirm</string>
+    <string name="driver_name">Insert Driver Name:</string>
+    <string name="driver_id">Insert Driver ID:</string>
+    <string name="insurance_num">Insert Driver Insurance Number:</string>
+    <string name="car_number">Insert Car Number:</string>
 </resources>
