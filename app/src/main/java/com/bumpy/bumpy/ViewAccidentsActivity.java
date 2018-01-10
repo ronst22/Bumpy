@@ -16,7 +16,7 @@ public class ViewAccidentsActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.custom_toolbar);
         setSupportActionBar(myToolbar);
 
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_view_accidents, R.id.accident_item, stringArray);
+        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.accident_item, stringArray);
 
         ListView listView = (ListView) findViewById(R.id.accidents);
         listView.setAdapter(adapter);
