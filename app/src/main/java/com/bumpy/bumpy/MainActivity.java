@@ -28,7 +28,7 @@ import com.facebook.login.widget.ProfilePictureView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseBumpyActivity {
     LoginButton loginButton;
     CallbackManager callbackManager;
     Context context;
@@ -42,10 +42,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         FacebookSdk.setApplicationId("151468522166990");
         FacebookSdk.sdkInitialize(getApplicationContext());
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar myToolbar = findViewById(R.id.custom_toolbar);
-        setSupportActionBar(myToolbar);
+        super.onCreate(savedInstanceState);
         context = getApplicationContext();
 
         loginButton = (LoginButton)findViewById(R.id.login_button);
@@ -146,18 +144,6 @@ public class MainActivity extends AppCompatActivity {
         };
 
         accessTokenTracker.startTracking();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
     }
 
     public void accident(View view) {

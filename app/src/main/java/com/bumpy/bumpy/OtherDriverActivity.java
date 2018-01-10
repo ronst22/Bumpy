@@ -38,7 +38,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-public class OtherDriverActivity extends AppCompatActivity implements NfcAdapter.CreateNdefMessageCallback {
+public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter.CreateNdefMessageCallback {
 
     public static final String ERROR_DETECTED = "No NFC tag detected!";
     public static final String WRITE_SUCCESS = "Text written to the NFC tag successfully!";
@@ -53,10 +53,8 @@ public class OtherDriverActivity extends AppCompatActivity implements NfcAdapter
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_driver);
-        Toolbar myToolbar = findViewById(R.id.custom_toolbar);
-        setSupportActionBar(myToolbar);
+        super.onCreate(savedInstanceState);
         context = this;
         Toast.makeText(this, "Waiting for nfc", Toast.LENGTH_LONG).show();
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -96,18 +94,6 @@ public class OtherDriverActivity extends AppCompatActivity implements NfcAdapter
 
     public void NFC(View view) {
 
-    }
-
-        @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
     }
 
     public void Confirm(View view) {

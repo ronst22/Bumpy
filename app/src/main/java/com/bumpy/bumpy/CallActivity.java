@@ -12,7 +12,7 @@ import android.widget.Button;
  * Created by ronst on 1/10/2018.
  */
 
-public abstract class CallActivity extends AppCompatActivity {
+public class CallActivity extends BaseBumpyActivity {
     public void MakeACall(String number) {
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse(number));

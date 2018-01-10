@@ -21,23 +21,8 @@ public class Ambulance extends CallActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ambulance);
-        Toolbar myToolbar = findViewById(R.id.custom_toolbar);
-        setSupportActionBar(myToolbar);
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        super.onCreate(savedInstanceState);
     }
 
     @Override
