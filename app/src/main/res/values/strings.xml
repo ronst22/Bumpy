@@ -13,4 +13,6 @@
     <string name="driver_id">Insert Driver ID:</string>
     <string name="insurance_num">Insert Driver Insurance Number:</string>
     <string name="car_number">Insert Car Number:</string>
+    <string name="other_driver_header">Other driver details</string>
+    <string name="police">Do you need a Police?</string>
 </resources>

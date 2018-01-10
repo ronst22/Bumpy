@@ -4,11 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.NFC" />
 
-    <uses-feature
-        android:name="android.hardware.nfc"
-        android:required="true" />
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-feature android:name="android.hardware.nfc" android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -17,6 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+
         <activity android:name=".FBLoginActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -26,19 +25,17 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="text/plain" />
             </intent-filter>
-
             <meta-data
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter" />
         </activity>
         <activity android:name=".DynamicActivity" />
         <activity android:name=".Ambulance" />
-        <activity android:name=".OtherDriverActivity" />
+        <activity android:name=".OtherDriverActivity"/>
+        <activity android:name=".PoliceActivity"></activity>
         <activity android:name=".ViewAccidentsActivity"></activity>
     </application>
 
