@@ -1,5 +1,6 @@
 package com.bumpy.bumpy;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -16,11 +17,9 @@ import android.widget.Toast;
 public class AmbulanceQuestion implements IState {
 
     @Override
-    public void InitActivity(DynamicActivity dynamicActivity, LinearLayout lm, Resources resource) {
+    public void InitActivity(final DynamicActivity dynamicActivity, LinearLayout lm, Resources resource) {
         // create the layout params that will be used to define how your
         // button will be displayed
-
-
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
@@ -75,6 +74,9 @@ public class AmbulanceQuestion implements IState {
         // Set click listener for button
         btnNo.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                Intent intent = new Intent(dynamicActivity, DynamicActivity.class);
+                intent.putExtra(DynamicActivity.STATE, StatesFactory.STATES.DRIVER_INFO);
+                dynamicActivity.startActivity(intent);
             }
         });
 
@@ -83,39 +85,5 @@ public class AmbulanceQuestion implements IState {
         llButton.addView(btnNo);
         //Add button to LinearLayout defined in XML
         lm.addView(ll);
-
-//        //Create four
-//        for (int j = 0; j <= 6; j++) {
-//            System.out.println("FOR STATED");
-//            // Create LinearLayout
-//            LinearLayout ll = new LinearLayout(dynamicActivity);
-//            ll.setOrientation(LinearLayout.HORIZONTAL);
-
-//            // Create TextView
-//            TextView product = new TextView(dynamicActivity);
-//            product.setText(" Product" + j + "    ");
-//            ll.addView(product);
-
-//            // Create TextView
-//            TextView price = new TextView(dynamicActivity);
-//            price.setText("  $" + j + "     ");
-//            ll.addView(price);
-
-//            final int index = j;
-//            // Set click listener for button
-//            btn.setOnClickListener(new View.OnClickListener() {
-//                public void onClick(View v) {
-//
-////                    Toast.makeText(getApplicationContext(),
-////                            "Clicked Button Index :" + index,
-////                            Toast.LENGTH_LONG).show();
-//
-//                }
-//            });
-
-//            //Add button to LinearLayout
-//            ll.addView(btn);
-//            //Add button to LinearLayout defined in XML
-//            lm.addView(ll);
     }
 }
