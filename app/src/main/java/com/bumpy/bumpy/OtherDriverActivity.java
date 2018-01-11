@@ -55,6 +55,7 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_other_driver);
         super.onCreate(savedInstanceState);
+        super.initToolbar();
         context = this;
         Toast.makeText(this, "Waiting for nfc", Toast.LENGTH_LONG).show();
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);

@@ -13,6 +13,7 @@ import android.widget.Button;
  */
 
 public class CallActivity extends BaseBumpyActivity {
+
     public void MakeACall(String number) {
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse(number));

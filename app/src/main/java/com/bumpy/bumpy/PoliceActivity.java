@@ -23,7 +23,7 @@ public class PoliceActivity extends CallActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_police);
         super.onCreate(savedInstanceState);
-
+        super.initToolbar();
     }
 
     @Override

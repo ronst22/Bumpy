@@ -13,5 +13,6 @@ public class UserDataActivity extends BaseBumpyActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_user_data);
         super.onCreate(savedInstanceState);
+        super.initToolbar();
     }
 }

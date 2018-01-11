@@ -17,15 +17,14 @@ import org.json.JSONObject;
 
 import java.io.PrintWriter;
 
-public class ViewAccidentsActivity extends AppCompatActivity {
+public class ViewAccidentsActivity extends BaseBumpyActivity {
 
     String[] datesArray;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_accidents);
-        Toolbar myToolbar = findViewById(R.id.custom_toolbar);
-        setSupportActionBar(myToolbar);
+        super.initToolbar();
 
 
         JSONObject json;

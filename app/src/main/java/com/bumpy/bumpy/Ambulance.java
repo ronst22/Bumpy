@@ -23,6 +23,7 @@ public class Ambulance extends CallActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_ambulance);
         super.onCreate(savedInstanceState);
+        super.initToolbar();
     }
 
     @Override
