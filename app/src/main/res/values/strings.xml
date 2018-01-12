@@ -89,4 +89,6 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+    <string name="user_update">User Update</string>
+    <string name="current_driver_header">Your Details</string>
 </resources>

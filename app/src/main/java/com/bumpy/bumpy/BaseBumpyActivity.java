@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.bumpy.bumpy.R;
 import com.facebook.AccessToken;
@@ -17,6 +18,8 @@ import com.facebook.FacebookRequestError;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 
 /**
@@ -60,9 +63,10 @@ public class BaseBumpyActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
+                intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 // User chose the "Settings" item, show the app settings UI...
                 return true;
@@ -71,6 +75,22 @@ public class BaseBumpyActivity extends AppCompatActivity {
                 intent = new Intent(this, FBLoginActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.update_user:
+                intent = new Intent(this, UserDataActivity.class);
+
+                Profile profile = Profile.getCurrentProfile();
+
+                try {
+
+                    String name = profile.getFirstName() + " " + profile.getLastName();
+
+                    intent.putExtra(UserDataActivity.USER_NAME, name);
+                    startActivity(intent);
+                }
+                catch (Exception e) {
+                    Toast.makeText(this, "Please login to facebook first", Toast.LENGTH_LONG).show();
+                }
+
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.

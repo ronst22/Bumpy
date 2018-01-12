@@ -40,11 +40,12 @@
         <activity android:name=".DynamicActivity" />
         <activity android:name=".Ambulance" />
         <activity android:name=".OtherDriverActivity" />
-        <activity android:name=".PoliceActivity"></activity>
-        <activity android:name=".ViewAccidentsActivity"></activity>
+        <activity android:name=".PoliceActivity" />
+        <activity android:name=".ViewAccidentsActivity" />
+        <activity android:name=".UserDataActivity" />
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings" />
     </application>
 
 </manifest>
