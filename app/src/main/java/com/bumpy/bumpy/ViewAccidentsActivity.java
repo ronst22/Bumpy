@@ -29,7 +29,7 @@ public class ViewAccidentsActivity extends BaseBumpyActivity {
 
         JSONObject json;
         try {
-            json = new JSONObject("{result : [a, b, ladlf, lfo]}");
+            json = new JSONObject("{\"result\" : [\"24/05/2017 10:57:13\", \"12/11/2017 14:12:40\", \"01/01/2018 19:40:40\"]}");
             JSONArray jsonDates = json.getJSONArray("result");
             datesArray = new String[jsonDates.length()];
             for (int i = 0; i < datesArray.length; i++) {
