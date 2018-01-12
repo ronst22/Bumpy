@@ -16,6 +16,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
@@ -27,6 +28,7 @@ public class FBLoginActivity extends BaseBumpyActivity {
 
     LoginButton loginButton;
     CallbackManager callbackManager;
+    private ProfileTracker mProfileTracker;
 
     public boolean isLoggedInToFacebook() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
@@ -59,67 +61,24 @@ public class FBLoginActivity extends BaseBumpyActivity {
                 profilePictureView.setProfileId(loginResult.getAccessToken().getUserId());
 
                 Log.d("FB Logging", "Successful");
-                Profile fbProfile = Profile.getCurrentProfile();
-                final String name = new String(fbProfile.getFirstName() + fbProfile.getLastName());
-                Log.d("FB Name", name);
 
-                Communication.GetData(getApplicationContext(), "/v1/user/" + name, new Response.Listener<JSONObject>()
-                        {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                    // display response
-                    try {
-
-                        JSONObject jsonObj = response.getJSONObject("result");
-                        Log.d("Server received name: ", jsonObj.getString("name"));
-                        if (!name.equals(jsonObj.getString("name"))) {
-                            Log.d("Info ", "User received from server is NOT equal to facebook user");
-                            JSONObject postparams = null;
-                            try {
-                                postparams = new JSONObject()
-                                        .put("name", name)
-                                        .put("car_number", 111111)
-                                        .put("car_insurance", 1111111)
-                                        .put("user_personal_id", 1111111);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                            Communication.SendData(getApplicationContext(), "/v1/user", postparams, new Response.Listener() {
-                                        @Override
-                                        public void onResponse(Object response) {
-                                            Toast.makeText(getApplicationContext(),
-                                                    "Receive a response: " + response.toString(),
-                                                    Toast.LENGTH_LONG).show();
-                                            System.out.println("RESO about the user: " + response.toString());
-                                        }
-                                    },
-                                    new Response.ErrorListener() {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error) {
-                                            Toast.makeText(getApplicationContext(),
-                                                    "Error occurred: " + error.toString(),
-                                                    Toast.LENGTH_LONG).show();
-                                            System.out.println("ERROR: " + error.toString());
-                                            //Failure Callback
-
-                                        }});
+                if(Profile.getCurrentProfile() == null) {
+                    mProfileTracker = new ProfileTracker() {
+                        @Override
+                        protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                            Log.v("facebook - profile", currentProfile.getFirstName());
+                            UpdateUser(currentProfile.getFirstName() + currentProfile.getLastName());
+                            mProfileTracker.stopTracking();
                         }
-                    } catch (Exception e)
-                    {
-                        Log.d("ERROR", e.toString());
-                    }
-                    Log.d("Response", response.toString());
+                    };
+                    // no need to call startTracking() on mProfileTracker
+                    // because it is called by its constructor, internally.
                 }
-            },
-            new Response.ErrorListener()
-            {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d("Error.Response", error.toString());
+                else {
+                    Profile profile = Profile.getCurrentProfile();
+                    Log.v("facebook - profile", profile.getFirstName());
+                    UpdateUser(profile.getFirstName() + profile.getLastName());
                 }
-            });
-
                 startActivity(new Intent(FBLoginActivity.this, MainActivity.class));
             }
 
@@ -153,5 +112,64 @@ public class FBLoginActivity extends BaseBumpyActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void UpdateUser(final String name) {
+    Communication.GetData(getApplicationContext(), "/v1/user/" + name, new Response.Listener<JSONObject>()
+    {
+        @Override
+        public void onResponse(JSONObject response) {
+            // display response
+            try {
+
+                JSONObject jsonObj = response.getJSONObject("result");
+                Log.d("Server received name: ", jsonObj.getString("name"));
+                if (!name.equals(jsonObj.getString("name"))) {
+                    Log.d("Info ", "User received from server is NOT equal to facebook user");
+                    JSONObject postparams = null;
+                    try {
+                        postparams = new JSONObject()
+                                .put("name", name)
+                                .put("car_number", 111111)
+                                .put("car_insurance", 1111111)
+                                .put("user_personal_id", 1111111);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    Communication.SendData(getApplicationContext(), "/v1/user", postparams, new Response.Listener() {
+                                @Override
+                                public void onResponse(Object response) {
+                                    Toast.makeText(getApplicationContext(),
+                                            "Receive a response: " + response.toString(),
+                                            Toast.LENGTH_LONG).show();
+                                    System.out.println("RESO about the user: " + response.toString());
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Toast.makeText(getApplicationContext(),
+                                            "Error occurred: " + error.toString(),
+                                            Toast.LENGTH_LONG).show();
+                                    System.out.println("ERROR: " + error.toString());
+                                    //Failure Callback
+
+                                }});
+                }
+            } catch (Exception e)
+            {
+                Log.d("ERROR", e.toString());
+            }
+            Log.d("Response", response.toString());
+        }
+    },
+    new Response.ErrorListener()
+    {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Log.d("Error.Response", error.toString());
+        }
+    });
     }
 }
