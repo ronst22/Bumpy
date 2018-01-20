@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bumpy.bumpy.TakingPicturesActivity">
+
+    <include
+        android:id="@+id/custom_toolbar"
+        layout="@layout/toolbar" />
+
+    <ImageButton
+        android:id="@+id/pic_back"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="25dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="25dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="false"
+        android:background="@drawable/car_back"
+
+        android:onClick="TakeImage"
+        android:tag="back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/pic_right"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@android:drawable/btn_star" />
+
+    <ImageButton
+        android:id="@+id/pic_front"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="60dp"
+        android:layout_marginStart="25dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="false"
+        android:background="@drawable/car_front"
+        android:onClick="TakeImage"
+        android:tag="front"
+        app:layout_constraintBottom_toTopOf="@+id/pic_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@android:drawable/btn_star" />
+
+    <ImageButton
+        android:id="@+id/pic_right"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="false"
+        android:background="@drawable/car_right"
+
+        android:onClick="TakeImage"
+        android:tag="right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/btn_star" />
+
+    <ImageButton
+        android:id="@+id/pic_left"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="60dp"
+        android:layout_marginEnd="25dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="false"
+        android:background="@drawable/car_left"
+
+        android:onClick="TakeImage"
+        android:tag="left"
+        app:layout_constraintBottom_toTopOf="@+id/pic_right"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/btn_star" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="348dp"
+        android:layout_height="64dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_weight="1"
+        android:text="press on the pictures to take a picture"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:text="front"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/pic_front"
+        app:layout_constraintStart_toStartOf="@+id/pic_front" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:text="back"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/pic_back"
+        app:layout_constraintStart_toStartOf="@+id/pic_back" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:text="left"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/pic_left"
+        app:layout_constraintStart_toStartOf="@+id/pic_left" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:text="right"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/pic_right"
+        app:layout_constraintStart_toStartOf="@+id/pic_right" />
+
+</android.support.constraint.ConstraintLayout>
