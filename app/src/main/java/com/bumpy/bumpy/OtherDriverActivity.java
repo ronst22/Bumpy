@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter.CreateNdefMessageCallback {
 
@@ -69,18 +70,10 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
         }
         nfcAdapter.setNdefPushMessageCallback(this, this);
 
-//        readFromIntent(getIntent());
-//
-//        pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-//        IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
-//        tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
-//        writeTagFilters = new IntentFilter[] { tagDetected };
-//        try {
-//            write("Hey amnonn it work1!!", myTag);
-//        } catch (Exception e)
-//        {
-//            Toast.makeText(this, "Failed to nfc", Toast.LENGTH_LONG).show();
-//        }
+        // Open the NFC
+        // We need to pass the userID
+        NdefRecord mimeRecord = NdefRecord.createMime("application/vnd.com.example.android.beam",
+                "InertUserIDHere".getBytes(Charset.forName("US-ASCII")));
 
     }
 
