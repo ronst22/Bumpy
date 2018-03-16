@@ -11,26 +11,28 @@
 
     <Button
         android:id="@+id/button3"
-        android:layout_width="150dp"
-        android:layout_height="110dp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:onClick="Yes"
         android:text="@string/yes"
         android:textSize="30sp"
+        android:background="@drawable/rounded_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/button4"
-        android:layout_width="150dp"
-        android:layout_height="110dp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:onClick="No"
         android:text="@string/no"
         android:textAlignment="center"
         android:textSize="30sp"
+        android:background="@drawable/rounded_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
