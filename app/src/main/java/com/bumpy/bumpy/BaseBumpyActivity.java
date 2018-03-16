@@ -44,6 +44,10 @@ public class BaseBumpyActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public void onBackPressed() {
+        // We disable this functionality
+    }
     /*public void disconnectFromFacebook() {
 
         if (AccessToken.getCurrentAccessToken() == null) {
@@ -81,10 +85,6 @@ public class BaseBumpyActivity extends AppCompatActivity {
                 Profile profile = Profile.getCurrentProfile();
 
                 try {
-
-                    String name = profile.getFirstName() + " " + profile.getLastName();
-
-                    intent.putExtra(UserDataActivity.USER_NAME, name);
                     startActivity(intent);
                 }
                 catch (Exception e) {
