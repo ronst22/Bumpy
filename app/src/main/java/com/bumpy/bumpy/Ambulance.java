@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import com.kofigyan.stateprogressbar.StateProgressBar;
 
 public class Ambulance extends CallActivity {
     public final static String AmbulanceNumber = "tel:0546500125";
@@ -25,7 +26,14 @@ public class Ambulance extends CallActivity {
         setContentView(R.layout.activity_ambulance);
         super.onCreate(savedInstanceState);
         super.initToolbar();
+
         called_ambulance = false;
+
+        overridePendingTransition(0, 0);
+
+        String[] descriptionData = {"Ambulance", "Police", "Details"};
+        StateProgressBar stateProgressBar = (StateProgressBar) findViewById(R.id.your_state_progress_bar_id);
+        stateProgressBar.setStateDescriptionData(descriptionData);
     }
 
     @Override
@@ -53,6 +61,9 @@ public class Ambulance extends CallActivity {
     }
 
     public void No(View view) {
+        StateProgressBar stateProgressBar = (StateProgressBar) findViewById(R.id.your_state_progress_bar_id);
+        stateProgressBar.enableAnimationToCurrentState(true);
+        stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.TWO);
         Intent intent = new Intent(this, PoliceActivity.class);
         startActivity(intent);
     }

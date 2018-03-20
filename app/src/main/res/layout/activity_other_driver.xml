@@ -21,7 +21,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="56dp"
+            android:paddingTop="32dp"
             android:paddingLeft="24dp"
             android:paddingRight="24dp">
 
@@ -35,15 +35,13 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp">
-
-                <EditText
-                    android:id="@+id/driverName"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+                <EditText android:id="@+id/driverName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/driver_name"
-                    android:inputType="textCapWords" />
+                    android:inputType="textCapWords"
+                    android:hint="@string/driver_name" />
             </android.support.design.widget.TextInputLayout>
 
             <!-- driver id Label -->
@@ -113,8 +111,7 @@
                     android:layout_marginTop="24dp"
                     android:onClick="Confirm"
                     android:padding="12dp"
-                    android:text="@string/Confirm"
-                    android:background="@drawable/rounded_button"/>
+                    android:text="@string/Confirm" />
 
                 <!-- Cancel Button -->
                 <android.support.v7.widget.AppCompatButton
@@ -126,8 +123,7 @@
                     android:layout_marginTop="24dp"
                     android:onClick="Cancel"
                     android:padding="12dp"
-                    android:text="@string/cancel"
-                    android:background="@drawable/rounded_button"/>
+                    android:text="@string/cancel" />
             </LinearLayout>
 
         </LinearLayout>

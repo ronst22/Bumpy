@@ -28,8 +28,8 @@ import com.facebook.login.widget.ProfilePictureView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MainActivity extends BaseBumpyActivity {
 
+public class MainActivity extends BaseBumpyActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FacebookSdk.setApplicationId("151468522166990");

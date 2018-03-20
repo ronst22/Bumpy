@@ -35,6 +35,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.kofigyan.stateprogressbar.StateProgressBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,6 +63,13 @@ public class OtherDriverActivity extends BaseBumpyActivity {
         setContentView(R.layout.activity_other_driver);
         super.onCreate(savedInstanceState);
         super.initToolbar();
+        overridePendingTransition(0, 0);
+
+        String[] descriptionData = {"Ambulance", "Police", "Details"};
+        StateProgressBar stateProgressBar = (StateProgressBar) findViewById(R.id.your_state_progress_bar_id);
+        stateProgressBar.enableAnimationToCurrentState(true);
+        stateProgressBar.setStateDescriptionData(descriptionData);
+
         context = this;
         got_response = false;
 //        Toast.makeText(this, "Waiting for nfc", Toast.LENGTH_LONG).show();
