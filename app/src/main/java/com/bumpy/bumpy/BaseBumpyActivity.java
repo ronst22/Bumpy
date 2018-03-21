@@ -46,7 +46,8 @@ public class BaseBumpyActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // We disable this functionality
+        Intent intent = new Intent(BaseBumpyActivity.this, MainActivity.class);
+        startActivity(intent);
     }
     /*public void disconnectFromFacebook() {
 

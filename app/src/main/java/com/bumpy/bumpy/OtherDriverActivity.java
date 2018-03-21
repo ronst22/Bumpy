@@ -1,6 +1,7 @@
 package com.bumpy.bumpy;
 
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -47,6 +48,7 @@ public class OtherDriverActivity extends BaseBumpyActivity {
     public static final String WRITE_SUCCESS = "Text written to the NFC tag successfully!";
     public static final String WRITE_ERROR = "Error during writing, is the NFC tag close enough to your device?";
     public static final int MY_SOCKET_TIMEOUT_MS = 5000;
+    boolean got_response;
     NfcAdapter nfcAdapter;
     PendingIntent pendingIntent;
     IntentFilter writeTagFilters[];
@@ -60,6 +62,7 @@ public class OtherDriverActivity extends BaseBumpyActivity {
         super.onCreate(savedInstanceState);
         super.initToolbar();
         context = this;
+        got_response = false;
 //        Toast.makeText(this, "Waiting for nfc", Toast.LENGTH_LONG).show();
 //        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 //        if (nfcAdapter == null) {
@@ -152,11 +155,39 @@ public class OtherDriverActivity extends BaseBumpyActivity {
         insuranceNum = insuNum.getText().toString();
         driverLicenseNum = driverLicense.getText().toString();
 
+        final ProgressDialog progressDialog = new ProgressDialog(OtherDriverActivity.this,
+                R.style.Theme_AppCompat_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Authenticating...");
+        progressDialog.show();
+
         sendData();
         Log.i("OtherDriverActivity", "Send message of an accident");
 
-        Intent intent = new Intent(this, ViewAccidentsActivity.class);
-        startActivity(intent);
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        if (got_response) {
+                            // On complete call either onLoginSuccess or onLoginFailed
+                            Intent intent = new Intent(OtherDriverActivity.this, ViewAccidentsActivity.class);
+                            startActivity(intent);
+                        }
+                        else {
+                            new AlertDialog.Builder(OtherDriverActivity.this, R.style.Theme_AppCompat_Dialog)
+                                    .setMessage("Failed to connect the server\r\n")
+                                    .setCancelable(false)
+                                    .setPositiveButton("Return Home", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            Intent intent = new Intent(OtherDriverActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    })
+                                    .setNegativeButton("Continue", null)
+                                    .show();
+                        }
+                        progressDialog.dismiss();
+                    }
+                }, 3000);
     }
 
     public static String driverName;
@@ -185,12 +216,14 @@ public class OtherDriverActivity extends BaseBumpyActivity {
         Communication.SendData(getApplicationContext(), "/v1/accident", postparams, new Response.Listener() {
                     @Override
                     public void onResponse(Object response) {
+                        got_response = true;
                         Log.d("OtherDriverActivity", "RESO: " + response.toString());
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        got_response = false;
                         Log.d("OtherDriverActivity", "Error: " + error.toString());
                         //Failure Callback
 
