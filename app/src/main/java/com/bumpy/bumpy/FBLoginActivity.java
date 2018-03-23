@@ -29,6 +29,8 @@ public class FBLoginActivity extends BaseBumpyActivity {
     LoginButton loginButton;
     CallbackManager callbackManager;
     private ProfileTracker mProfileTracker;
+    public static String first_name = "";
+    public static String last_name = "";
 
     public boolean isLoggedInToFacebook() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
@@ -77,7 +79,9 @@ public class FBLoginActivity extends BaseBumpyActivity {
                 else {
                     Profile profile = Profile.getCurrentProfile();
                     Log.v("facebook - profile", profile.getFirstName());
-                    UpdateUser(profile.getFirstName() + profile.getLastName());
+                    first_name = profile.getFirstName();
+                    last_name = profile.getLastName();
+                    UpdateUser(first_name + last_name);
                 }
                 startActivity(new Intent(FBLoginActivity.this, MainActivity.class));
             }
@@ -124,38 +128,15 @@ public class FBLoginActivity extends BaseBumpyActivity {
 
                 JSONObject jsonObj = response.getJSONObject("result");
                 Log.d("Server received name: ", jsonObj.getString("name"));
+
+                // Check if the user is not already logged in
                 if (!name.equals(jsonObj.getString("name"))) {
                     Log.d("Info ", "User received from server is NOT equal to facebook user");
-                    JSONObject postparams = null;
-                    try {
-                        postparams = new JSONObject()
-                                .put("name", name)
-                                .put("car_number", 111111)
-                                .put("car_insurance", 1111111)
-                                .put("user_personal_id", 1111111);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
 
-                    Communication.SendData(getApplicationContext(), "/v1/user", postparams, new Response.Listener() {
-                                @Override
-                                public void onResponse(Object response) {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Receive a response: " + response.toString(),
-                                            Toast.LENGTH_LONG).show();
-                                    System.out.println("RESO about the user: " + response.toString());
-                                }
-                            },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Error occurred: " + error.toString(),
-                                            Toast.LENGTH_LONG).show();
-                                    System.out.println("ERROR: " + error.toString());
-                                    //Failure Callback
-
-                                }});
+                    // Go to user setting page
+                    Intent intent = new Intent(FBLoginActivity.this, UserDataActivity.class);
+                    intent.putExtra(UserDataActivity.USER_NAME, name);
+                    startActivity(intent);
                 }
             } catch (Exception e)
             {

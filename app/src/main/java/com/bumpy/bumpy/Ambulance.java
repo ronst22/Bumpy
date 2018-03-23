@@ -18,12 +18,14 @@ import android.widget.Toast;
 
 public class Ambulance extends CallActivity {
     public final static String AmbulanceNumber = "tel:0546500125";
+    public static boolean called_ambulance = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_ambulance);
         super.onCreate(savedInstanceState);
         super.initToolbar();
+        called_ambulance = false;
     }
 
     @Override
@@ -33,6 +35,7 @@ public class Ambulance extends CallActivity {
         if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             MakeACall(AmbulanceNumber);
+            called_ambulance = true;
         }
     }
 

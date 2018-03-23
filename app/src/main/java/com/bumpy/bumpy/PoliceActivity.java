@@ -18,12 +18,14 @@ import android.widget.Toast;
 public class PoliceActivity extends CallActivity {
 
     public final static String PoliceNumber = "tel:0508823116";
+    public static boolean called_police = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_police);
         super.onCreate(savedInstanceState);
         super.initToolbar();
+        called_police = false;
     }
 
     @Override
@@ -46,6 +48,7 @@ public class PoliceActivity extends CallActivity {
         }
         else {
             MakeACall(PoliceNumber );
+            called_police = true;
         }
     }
 
