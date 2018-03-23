@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "902289928851",
+    "firebase_url": "https://bumpy-979af.firebaseio.com",
+    "project_id": "bumpy-979af",
+    "storage_bucket": "bumpy-979af.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:902289928851:android:39daea76eb0a4f5b",
+        "android_client_info": {
+          "package_name": "com.bumpy.bumpy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "902289928851-j4h4cbru5i64ani3aess0q7do2h1k0at.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bumpy.bumpy",
+            "certificate_hash": "f4d2f540c2346fa2fe6d949ff63026a373b08e41"
+          }
+        },
+        {
+          "client_id": "902289928851-23cq7kgsu4cag49qu1vc4tvbidp2hjoa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-4NAddqH3GuKIfeQ6Mgq1A8SIBIiv_sk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "902289928851-23cq7kgsu4cag49qu1vc4tvbidp2hjoa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

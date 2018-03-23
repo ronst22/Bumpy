@@ -21,9 +21,12 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,7 +47,15 @@ public class MainActivity extends BaseBumpyActivity {
 
         ProfilePictureView profilePictureView;
         profilePictureView = (ProfilePictureView) findViewById(R.id.friendProfilePicture);
-        profilePictureView.setProfileId(token.getUserId());
+        if (mAuth.getCurrentUser() != null) {
+            profilePictureView.setProfileId(token.getUserId());
+        }
+        else
+        {
+            LoginManager.getInstance().logOut();
+            Intent loginIntent = new Intent(this, FBLoginActivity.class);
+            startActivity(loginIntent);
+        }
     }
 
     public void accident(View view) {
