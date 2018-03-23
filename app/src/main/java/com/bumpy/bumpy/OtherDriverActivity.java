@@ -47,7 +47,6 @@ import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -248,30 +247,17 @@ public class OtherDriverActivity extends BaseBumpyActivity {
 //        Toast.makeText(this, "Waiting for NDEF Message", Toast.LENGTH_LONG).show();
 
     }
-
+    
     private void writeAccident(Date localDateTime, boolean called_ambulance, boolean called_police,
                                String driverName, String driverId, String carNumber, String insuranceNum, String driverLicenseNum) {
         String key = mDatabase.child("accidents").push().getKey();
-        DriverData driverData = new DriverData(driverName, driverId, carNumber, insuranceNum, driverLicenseNum);
         Accident accident = new Accident(localDateTime, called_ambulance, called_police,
-                                         driverData);
+                                         new DriverData(driverName, driverId, carNumber, insuranceNum, driverLicenseNum));
         Map<String, Object> accidentValues = accident.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/accidents/" + key, accidentValues);
         childUpdates.put("/user-accidents/" + mAuth.getCurrentUser().getUid() + "/" + key, accidentValues);
-
-        mDatabase.updateChildren(childUpdates);
-        got_response = true;
-}
-    private void writeAccident(String driverName, String driverId, String carNumber, String insuranceNum, String driverLicenseNum) {
-        String key = mDatabase.child("accidents").push().getKey();
-        DriverData post = new DriverData(driverName, driverId, carNumber, insuranceNum, driverLicenseNum);
-        Map<String, Object> postValues = post.toMap();
-
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/accidents/" + key, postValues);
-        childUpdates.put("/user-accidents/" + mAuth.getCurrentUser().getUid() + "/" + key, postValues);
 
         mDatabase.updateChildren(childUpdates);
     }
