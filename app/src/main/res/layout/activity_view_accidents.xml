@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.bumpy.bumpy.ViewAccidentsActivity">
+    tools:context="com.bumpy.bumpy.ViewAccidentsActivity"
+    android:theme="@style/Theme.AppCompat">
 
     <include
         android:id="@+id/custom_toolbar"
@@ -16,6 +17,8 @@
         android:layout_height="495dp"
         android:layout_marginBottom="16dp"
         android:layout_marginStart="8dp"
+        android:divider="@color/material_blue_grey_800"
+        android:dividerHeight="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

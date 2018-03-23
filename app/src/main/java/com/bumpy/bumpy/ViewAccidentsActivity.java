@@ -30,7 +30,7 @@ public class ViewAccidentsActivity extends BaseBumpyActivity {
     String[] datesArray;
     private DatabaseReference mAccidentReference;
     private ValueEventListener accidentListener;
-    private ArrayList<DriverData> driverDataArray;
+    private ArrayList<Accident> accidentArray;
     private String TAG = "ViewAccidentActivity";
 
     @Override
@@ -40,7 +40,8 @@ public class ViewAccidentsActivity extends BaseBumpyActivity {
         super.initToolbar();
 
         mAccidentReference = FirebaseDatabase.getInstance().getReference()
-                .child("accidents").child(mAuth.getCurrentUser().getUid());
+                .child("user-accidents").child(mAuth.getCurrentUser().getUid());
+        Log.d(TAG, "The user id is: " + mAuth.getCurrentUser().getUid());
 
 //
 //        JSONObject json;
@@ -61,15 +62,20 @@ public class ViewAccidentsActivity extends BaseBumpyActivity {
 //        ListView listView = (ListView) findViewById(R.id.accidents);
 //        listView.setAdapter(adapter);
 
-        driverDataArray = new ArrayList<DriverData>();
+        accidentArray = new ArrayList<>();
         accidentListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
-                DriverData driverData = dataSnapshot.getValue(DriverData.class);
-                Log.d(TAG, "The driver data is: " + driverData);
-                driverDataArray.add(driverData);
-                ArrayAdapter adapter = new ArrayAdapter<DriverData>(ViewAccidentsActivity.this, R.layout.accident_item, driverDataArray);
+                for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+                    Accident accident = childDataSnapshot.getValue(Accident.class);
+                    Log.d(TAG, "Number of values from the db " + dataSnapshot.getChildrenCount());
+                    Log.d(TAG, "Accident driver data " + accident.driverData);
+                    Log.d(TAG, "The accident is: " + accident);
+                    accidentArray.add(accident);
+                }
+
+                ArrayAdapter adapter = new ArrayAdapter<>(ViewAccidentsActivity.this, R.layout.accident_item, accidentArray);
 
                 ListView listView = (ListView) findViewById(R.id.accidents);
                 listView.setAdapter(adapter);

@@ -42,6 +42,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -192,7 +196,8 @@ public class OtherDriverActivity extends BaseBumpyActivity {
     public static String driverLicenseNum;
 
     public void sendData() {
-        writeAccident(driverName, driverId, carNumber, insuranceNum, driverLicenseNum);
+        writeAccident(Calendar.getInstance().getTime(), Ambulance.called_ambulance, PoliceActivity.called_police,
+                      driverName, driverId, carNumber, insuranceNum, driverLicenseNum);
 
         JSONObject postparams = null;
         try {
@@ -241,15 +246,17 @@ public class OtherDriverActivity extends BaseBumpyActivity {
 //        Toast.makeText(this, "Waiting for NDEF Message", Toast.LENGTH_LONG).show();
 
     }
-    
-    private void writeAccident(String driverName, String driverId, String carNumber, String insuranceNum, String driverLicenseNum) {
+
+    private void writeAccident(Date localDateTime, boolean called_ambulance, boolean called_police,
+                               String driverName, String driverId, String carNumber, String insuranceNum, String driverLicenseNum) {
         String key = mDatabase.child("accidents").push().getKey();
-        DriverData post = new DriverData(driverName, driverId, carNumber, insuranceNum, driverLicenseNum);
-        Map<String, Object> postValues = post.toMap();
+        Accident accident = new Accident(localDateTime, called_ambulance, called_police,
+                                         new DriverData(driverName, driverId, carNumber, insuranceNum, driverLicenseNum));
+        Map<String, Object> accidentValues = accident.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/accidents/" + key, postValues);
-        childUpdates.put("/user-accidents/" + mAuth.getCurrentUser().getUid() + "/" + key, postValues);
+        childUpdates.put("/accidents/" + key, accidentValues);
+        childUpdates.put("/user-accidents/" + mAuth.getCurrentUser().getUid() + "/" + key, accidentValues);
 
         mDatabase.updateChildren(childUpdates);
     }
