@@ -41,6 +41,10 @@ public class BaseBumpyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        // Make the user-accidents available offline
+        DatabaseReference scoresRef = FirebaseDatabase.getInstance().getReference("user-accidents");
+        scoresRef.keepSynced(true);
     }
 
     protected void initToolbar() {

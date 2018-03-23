@@ -35,7 +35,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    android:hint="@string/Date_And_Time" />
+                    android:hint="@string/Date_And_Time"
+                    android:focusable="false"/>
             </android.support.design.widget.TextInputLayout>
 
 
@@ -49,7 +50,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    android:hint="@string/driver_name" />
+                    android:hint="@string/driver_name"
+                    android:focusable="false"/>
             </android.support.design.widget.TextInputLayout>
 
             <!-- driver id Label -->
@@ -62,7 +64,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    android:hint="@string/driver_id" />
+                    android:hint="@string/driver_id"
+                    android:focusable="false"/>
             </android.support.design.widget.TextInputLayout>
 
             <!-- car number Label -->
@@ -75,7 +78,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    android:hint="@string/car_number"/>
+                    android:hint="@string/car_number"
+                    android:focusable="false"/>
             </android.support.design.widget.TextInputLayout>
 
 
@@ -89,7 +93,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    android:hint="@string/insurance_num"/>
+                    android:hint="@string/insurance_num"
+                    android:focusable="false"/>
             </android.support.design.widget.TextInputLayout>
 
             <!-- driver license Label -->
@@ -102,7 +107,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    android:hint="@string/driver_license"/>
+                    android:hint="@string/driver_license"
+                    android:focusable="false"/>
             </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
