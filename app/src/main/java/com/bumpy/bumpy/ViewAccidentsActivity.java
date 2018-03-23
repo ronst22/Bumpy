@@ -1,10 +1,13 @@
 package com.bumpy.bumpy;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
@@ -25,13 +28,15 @@ import java.io.PrintWriter;
 import java.sql.Driver;
 import java.util.ArrayList;
 
-public class ViewAccidentsActivity extends BaseBumpyActivity {
+public class ViewAccidentsActivity extends BaseBumpyActivity implements AdapterView.OnItemClickListener {
 
     String[] datesArray;
     private DatabaseReference mAccidentReference;
     private ValueEventListener accidentListener;
     private ArrayList<Accident> accidentArray;
     private String TAG = "ViewAccidentActivity";
+    private ListView listView;
+    public static Accident currAccident;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +67,17 @@ public class ViewAccidentsActivity extends BaseBumpyActivity {
 //        ListView listView = (ListView) findViewById(R.id.accidents);
 //        listView.setAdapter(adapter);
 
+        listView = (ListView) findViewById(R.id.accidents);
+        listView.setOnItemClickListener(this);
         accidentArray = new ArrayList<>();
         accidentListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
                 for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
-                    Accident accident = childDataSnapshot.getValue(Accident.class);
+                    Accident accident = Accident.CreateFromDB(childDataSnapshot);
                     Log.d(TAG, "Number of values from the db " + dataSnapshot.getChildrenCount());
+                    Log.d(TAG, "Accident ambulance " + accident.called_ambulance);
                     Log.d(TAG, "Accident driver data " + accident.driverData);
                     Log.d(TAG, "The accident is: " + accident);
                     accidentArray.add(accident);
@@ -77,9 +85,10 @@ public class ViewAccidentsActivity extends BaseBumpyActivity {
 
                 ArrayAdapter adapter = new ArrayAdapter<>(ViewAccidentsActivity.this, R.layout.accident_item, accidentArray);
 
-                ListView listView = (ListView) findViewById(R.id.accidents);
                 listView.setAdapter(adapter);
             }
+
+//            listView.setOnItemClickListener(this);
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -90,6 +99,16 @@ public class ViewAccidentsActivity extends BaseBumpyActivity {
         };
         mAccidentReference.addValueEventListener(accidentListener);
 
+    }
+
+    public void onItemClick(AdapterView<?> l, View v, int position, long id) {
+        Log.i("HelloListView", "You clicked Item: " + id + " at position:" + position);
+        // Then you start a new Activity via Intent
+        Intent intent = new Intent();
+        intent.setClass(this, ShowAccident.class);
+        currAccident = (Accident) l.getItemAtPosition(position);
+        // Or / And
+        startActivity(intent);
     }
 
     @Override

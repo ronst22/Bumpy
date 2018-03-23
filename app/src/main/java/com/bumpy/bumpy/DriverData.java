@@ -1,8 +1,10 @@
 package com.bumpy.bumpy;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.sql.Driver;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +34,12 @@ public class DriverData {
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
+
+        return toMap(result);
+    }
+
+    @Exclude
+    public Map<String, Object> toMap(HashMap<String, Object> result) {
         result.put("driverName", driverName);
         result.put("driverId", driverId);
         result.put("carNumber", carNumber);
@@ -46,4 +54,11 @@ public class DriverData {
         return driverName + " | " + driverId + " | " + carNumber + " | " + insuranceNum + " | " + driverLicenseNum;
     }
 
+    public static DriverData CreateFromDB(DataSnapshot snapshot) {
+        return new DriverData((String) snapshot.child("driverName").getValue(),
+                (String) snapshot.child("driverId").getValue(),
+                (String) snapshot.child("carNumber").getValue(),
+                (String) snapshot.child("insuranceNum").getValue(),
+                (String) snapshot.child("driverLicenseNum").getValue());
+    }
 }

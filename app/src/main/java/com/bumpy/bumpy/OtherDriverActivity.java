@@ -42,6 +42,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.sql.Driver;
 import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -198,38 +199,38 @@ public class OtherDriverActivity extends BaseBumpyActivity {
     public void sendData() {
         writeAccident(Calendar.getInstance().getTime(), Ambulance.called_ambulance, PoliceActivity.called_police,
                       driverName, driverId, carNumber, insuranceNum, driverLicenseNum);
-
-        JSONObject postparams = null;
-        try {
-            postparams = new JSONObject()
-                    .put("user_name", FBLoginActivity.first_name + FBLoginActivity.last_name)
-                    .put("with_ambulance", Ambulance.called_ambulance)
-                    .put("with_police", PoliceActivity.called_police)
-                    .put("other_name", driverName)
-                    .put("other_personal_id", driverId)
-                    .put("other_car_number", carNumber)
-                    .put("other_car_insurance", insuranceNum)
-                    .put("other_driver_license", driverLicenseNum);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        Log.d("OtherDriverActivity", "Sending: " + postparams.toString());
-        Communication.SendData(getApplicationContext(), "/v1/accident", postparams, new Response.Listener() {
-                    @Override
-                    public void onResponse(Object response) {
-                        got_response = true;
-                        Log.d("OtherDriverActivity", "RESO: " + response.toString());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        got_response = false;
-                        Log.d("OtherDriverActivity", "Error: " + error.toString());
-                        //Failure Callback
-
-                    }});
+//
+//        JSONObject postparams = null;
+//        try {
+//            postparams = new JSONObject()
+//                    .put("user_name", FBLoginActivity.first_name + FBLoginActivity.last_name)
+//                    .put("with_ambulance", Ambulance.called_ambulance)
+//                    .put("with_police", PoliceActivity.called_police)
+//                    .put("other_name", driverName)
+//                    .put("other_personal_id", driverId)
+//                    .put("other_car_number", carNumber)
+//                    .put("other_car_insurance", insuranceNum)
+//                    .put("other_driver_license", driverLicenseNum);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//        Log.d("OtherDriverActivity", "Sending: " + postparams.toString());
+//        Communication.SendData(getApplicationContext(), "/v1/accident", postparams, new Response.Listener() {
+//                    @Override
+//                    public void onResponse(Object response) {
+//                        got_response = true;
+//                        Log.d("OtherDriverActivity", "RESO: " + response.toString());
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        got_response = false;
+//                        Log.d("OtherDriverActivity", "Error: " + error.toString());
+//                        //Failure Callback
+//
+//                    }});
     }
 
     protected void onResume(){
@@ -250,8 +251,9 @@ public class OtherDriverActivity extends BaseBumpyActivity {
     private void writeAccident(Date localDateTime, boolean called_ambulance, boolean called_police,
                                String driverName, String driverId, String carNumber, String insuranceNum, String driverLicenseNum) {
         String key = mDatabase.child("accidents").push().getKey();
+        DriverData driverData = new DriverData(driverName, driverId, carNumber, insuranceNum, driverLicenseNum);
         Accident accident = new Accident(localDateTime, called_ambulance, called_police,
-                                         new DriverData(driverName, driverId, carNumber, insuranceNum, driverLicenseNum));
+                                         driverData);
         Map<String, Object> accidentValues = accident.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
@@ -259,6 +261,7 @@ public class OtherDriverActivity extends BaseBumpyActivity {
         childUpdates.put("/user-accidents/" + mAuth.getCurrentUser().getUid() + "/" + key, accidentValues);
 
         mDatabase.updateChildren(childUpdates);
+        got_response = true;
     }
 
 }
