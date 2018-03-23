@@ -1,10 +1,13 @@
 package com.bumpy.bumpy;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -20,6 +23,12 @@ import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,8 +42,31 @@ public class FBLoginActivity extends BaseBumpyActivity {
     public static String last_name = "";
 
     public boolean isLoggedInToFacebook() {
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        return accessToken != null;
+        return mAuth.getCurrentUser() != null;
+    }
+
+    private void handleFacebookAccessToken(AccessToken token) {
+        Log.d("FBLoginActivity", "handleFacebookAccessToken:" + token);
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("FBLoginActivity", "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("FBLoginActivity", "signInWithCredential:failure", task.getException());
+                            Toast.makeText(FBLoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            updateUI(null);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -45,46 +77,26 @@ public class FBLoginActivity extends BaseBumpyActivity {
         setContentView(R.layout.activity_fblogin);
         super.initToolbar();
 
-        if (isLoggedInToFacebook())
-        {
+        if (isLoggedInToFacebook()) {
             startActivity(new Intent(FBLoginActivity.this, MainActivity.class));
         }
 
-        loginButton = (LoginButton)findViewById(R.id.login_button);
+        loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("email", "public_profile");
 
         callbackManager = CallbackManager.Factory.create();
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                // Change the profile picture displayed
-                ProfilePictureView profilePictureView;
-                profilePictureView = (ProfilePictureView) findViewById(R.id.friendProfilePicture);
-                profilePictureView.setProfileId(loginResult.getAccessToken().getUserId());
-
-                Log.d("FB Logging", "Successful");
-
-                if(Profile.getCurrentProfile() == null) {
-                    mProfileTracker = new ProfileTracker() {
-                        @Override
-                        protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                            Log.v("facebook - profile", currentProfile.getFirstName());
-                            UpdateUser(currentProfile.getFirstName() + currentProfile.getLastName());
-                            mProfileTracker.stopTracking();
-                        }
-                    };
-                    // no need to call startTracking() on mProfileTracker
-                    // because it is called by its constructor, internally.
-                }
-                else {
-                    Profile profile = Profile.getCurrentProfile();
-                    Log.v("facebook - profile", profile.getFirstName());
-                    first_name = profile.getFirstName();
-                    last_name = profile.getLastName();
-                    UpdateUser(first_name + last_name);
-                }
-                startActivity(new Intent(FBLoginActivity.this, MainActivity.class));
+                final ProgressDialog progressDialog = new ProgressDialog(FBLoginActivity.this,
+                        R.style.Theme_AppCompat_Dialog);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage("Authenticating...");
+                progressDialog.show();
+                handleFacebookAccessToken(loginResult.getAccessToken());
+                progressDialog.dismiss();
             }
+
 
             @Override
             public void onCancel() {
@@ -118,39 +130,18 @@ public class FBLoginActivity extends BaseBumpyActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void UpdateUser(final String name) {
-    Communication.GetData(getApplicationContext(), "/v1/user/" + name, new Response.Listener<JSONObject>()
-    {
-        @Override
-        public void onResponse(JSONObject response) {
-            // display response
-            try {
-
-                JSONObject jsonObj = response.getJSONObject("result");
-                Log.d("Server received name: ", jsonObj.getString("name"));
-
-                // Check if the user is not already logged in
-                if (!name.equals(jsonObj.getString("name"))) {
-                    Log.d("Info ", "User received from server is NOT equal to facebook user");
-
-                    // Go to user setting page
-                    Intent intent = new Intent(FBLoginActivity.this, UserDataActivity.class);
-                    intent.putExtra(UserDataActivity.USER_NAME, name);
-                    startActivity(intent);
-                }
-            } catch (Exception e)
-            {
-                Log.d("ERROR", e.toString());
-            }
-            Log.d("Response", response.toString());
+    private void updateUI(FirebaseUser user) {
+        if (user == null) {
+            return;
         }
-    },
-    new Response.ErrorListener()
-    {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            Log.d("Error.Response", error.toString());
-        }
-    });
+        // Change the profile picture displayed
+        ProfilePictureView profilePictureView;
+        profilePictureView = (ProfilePictureView) findViewById(R.id.friendProfilePicture);
+        AccessToken token = AccessToken.getCurrentAccessToken();
+        profilePictureView.setProfileId(token.getUserId());
+
+        Log.d("FB Logging", "Successful");
+
+        startActivity(new Intent(FBLoginActivity.this, MainActivity.class));
     }
 }

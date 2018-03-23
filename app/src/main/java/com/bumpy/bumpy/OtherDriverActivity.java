@@ -42,6 +42,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 
 public class OtherDriverActivity extends BaseBumpyActivity {
 
@@ -190,6 +192,8 @@ public class OtherDriverActivity extends BaseBumpyActivity {
     public static String driverLicenseNum;
 
     public void sendData() {
+        writeAccident(driverName, driverId, carNumber, insuranceNum, driverLicenseNum);
+
         JSONObject postparams = null;
         try {
             postparams = new JSONObject()
@@ -236,6 +240,18 @@ public class OtherDriverActivity extends BaseBumpyActivity {
 //    } else
 //        Toast.makeText(this, "Waiting for NDEF Message", Toast.LENGTH_LONG).show();
 
+    }
+    
+    private void writeAccident(String driverName, String driverId, String carNumber, String insuranceNum, String driverLicenseNum) {
+        String key = mDatabase.child("accidents").push().getKey();
+        DriverData post = new DriverData(driverName, driverId, carNumber, insuranceNum, driverLicenseNum);
+        Map<String, Object> postValues = post.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/accidents/" + key, postValues);
+        childUpdates.put("/user-accidents/" + mAuth.getCurrentUser().getUid() + "/" + key, postValues);
+
+        mDatabase.updateChildren(childUpdates);
     }
 
 }

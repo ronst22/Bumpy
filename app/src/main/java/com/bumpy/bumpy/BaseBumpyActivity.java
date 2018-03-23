@@ -21,15 +21,26 @@ import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by ronst on 1/10/2018.
  */
 
 public class BaseBumpyActivity extends AppCompatActivity {
+
+    protected FirebaseAuth mAuth;
+    protected DatabaseReference mDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
     protected void initToolbar() {
@@ -76,6 +87,7 @@ public class BaseBumpyActivity extends AppCompatActivity {
                 // User chose the "Settings" item, show the app settings UI...
                 return true;
             case R.id.logout:
+                FirebaseAuth.getInstance().signOut();
                 LoginManager.getInstance().logOut();
                 intent = new Intent(this, FBLoginActivity.class);
                 startActivity(intent);
