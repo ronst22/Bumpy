@@ -111,7 +111,8 @@
                     android:layout_marginTop="24dp"
                     android:onClick="Confirm"
                     android:padding="12dp"
-                    android:text="@string/Confirm" />
+                    android:text="@string/Confirm"
+                    android:background="@drawable/rounded_button"/>
 
                 <!-- Cancel Button -->
                 <android.support.v7.widget.AppCompatButton
@@ -123,7 +124,8 @@
                     android:layout_marginTop="24dp"
                     android:onClick="Cancel"
                     android:padding="12dp"
-                    android:text="@string/cancel" />
+                    android:text="@string/cancel"
+                    android:background="@drawable/rounded_button"/>
             </LinearLayout>
 
         </LinearLayout>

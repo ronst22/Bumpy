@@ -32,7 +32,7 @@ public class PoliceActivity extends CallActivity {
 
         overridePendingTransition(0, 0);
 
-        String[] descriptionData = {"Ambulance", "Police", "Details"};
+        String[] descriptionData = {"Ambulance", "Police"};
         StateProgressBar stateProgressBar = (StateProgressBar) findViewById(R.id.your_state_progress_bar_id);
         stateProgressBar.setStateDescriptionData(descriptionData);
     }
@@ -62,10 +62,6 @@ public class PoliceActivity extends CallActivity {
     }
 
     public void No(View view) {
-        StateProgressBar stateProgressBar = (StateProgressBar) findViewById(R.id.your_state_progress_bar_id);
-        stateProgressBar.enableAnimationToCurrentState(true);
-        stateProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.THREE);
-
         Intent intent = new Intent(this, OtherDriverActivity.class);
         startActivity(intent);
     }

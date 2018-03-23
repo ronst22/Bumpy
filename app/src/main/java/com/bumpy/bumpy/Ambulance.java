@@ -31,7 +31,7 @@ public class Ambulance extends CallActivity {
 
         overridePendingTransition(0, 0);
 
-        String[] descriptionData = {"Ambulance", "Police", "Details"};
+        String[] descriptionData = {"Ambulance", "Police"};
         StateProgressBar stateProgressBar = (StateProgressBar) findViewById(R.id.your_state_progress_bar_id);
         stateProgressBar.setStateDescriptionData(descriptionData);
     }

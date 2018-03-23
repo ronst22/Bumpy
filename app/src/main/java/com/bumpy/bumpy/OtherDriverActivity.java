@@ -35,7 +35,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.kofigyan.stateprogressbar.StateProgressBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,13 +62,6 @@ public class OtherDriverActivity extends BaseBumpyActivity {
         setContentView(R.layout.activity_other_driver);
         super.onCreate(savedInstanceState);
         super.initToolbar();
-        overridePendingTransition(0, 0);
-
-        String[] descriptionData = {"Ambulance", "Police", "Details"};
-        StateProgressBar stateProgressBar = (StateProgressBar) findViewById(R.id.your_state_progress_bar_id);
-        stateProgressBar.enableAnimationToCurrentState(true);
-        stateProgressBar.setStateDescriptionData(descriptionData);
-
         context = this;
         got_response = false;
 //        Toast.makeText(this, "Waiting for nfc", Toast.LENGTH_LONG).show();
@@ -229,10 +221,10 @@ public class OtherDriverActivity extends BaseBumpyActivity {
                         //Failure Callback
 
                     }});
-         }
+    }
 
-protected void onResume(){
-    super.onResume();
+    protected void onResume(){
+        super.onResume();
 //    Intent intent = getIntent();
 //    if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
 //        Parcelable[] rawMessages = intent.getParcelableArrayExtra(
@@ -244,6 +236,6 @@ protected void onResume(){
 //    } else
 //        Toast.makeText(this, "Waiting for NDEF Message", Toast.LENGTH_LONG).show();
 
-}
+    }
 
 }
