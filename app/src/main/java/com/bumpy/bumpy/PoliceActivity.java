@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.kofigyan.stateprogressbar.StateProgressBar;
+
 public class PoliceActivity extends CallActivity {
 
     public final static String PoliceNumber = "tel:0508823116";
@@ -25,7 +27,14 @@ public class PoliceActivity extends CallActivity {
         setContentView(R.layout.activity_police);
         super.onCreate(savedInstanceState);
         super.initToolbar();
+
         called_police = false;
+
+        overridePendingTransition(0, 0);
+
+        String[] descriptionData = {"Ambulance", "Police"};
+        StateProgressBar stateProgressBar = (StateProgressBar) findViewById(R.id.your_state_progress_bar_id);
+        stateProgressBar.setStateDescriptionData(descriptionData);
     }
 
     @Override

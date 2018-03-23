@@ -221,10 +221,10 @@ public class OtherDriverActivity extends BaseBumpyActivity {
                         //Failure Callback
 
                     }});
-         }
+    }
 
-protected void onResume(){
-    super.onResume();
+    protected void onResume(){
+        super.onResume();
 //    Intent intent = getIntent();
 //    if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
 //        Parcelable[] rawMessages = intent.getParcelableArrayExtra(
@@ -236,6 +236,6 @@ protected void onResume(){
 //    } else
 //        Toast.makeText(this, "Waiting for NDEF Message", Toast.LENGTH_LONG).show();
 
-}
+    }
 
 }

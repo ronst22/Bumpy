@@ -35,13 +35,15 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp">
-                <EditText android:id="@+id/driverName"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp">
+
+                <EditText
+                    android:id="@+id/driverName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none"
-                    android:hint="@string/driver_name" />
+                    android:hint="@string/driver_name"
+                    android:inputType="none" />
             </android.support.design.widget.TextInputLayout>
 
             <!-- driver id Label -->
@@ -111,7 +113,8 @@
                     android:layout_marginTop="24dp"
                     android:onClick="Confirm"
                     android:padding="12dp"
-                    android:text="@string/Confirm" />
+                    android:text="@string/Confirm"
+                    android:background="@drawable/rounded_button"/>
 
                 <!-- Cancel Button -->
                 <android.support.v7.widget.AppCompatButton
@@ -123,7 +126,8 @@
                     android:layout_marginTop="24dp"
                     android:onClick="Cancel"
                     android:padding="12dp"
-                    android:text="@string/cancel" />
+                    android:text="@string/cancel"
+                    android:background="@drawable/rounded_button"/>
             </LinearLayout>
 
         </LinearLayout>

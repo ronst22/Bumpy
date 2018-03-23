@@ -11,26 +11,28 @@
 
     <Button
         android:id="@+id/button3"
-        android:layout_width="150dp"
-        android:layout_height="110dp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:onClick="Yes"
         android:text="@string/yes"
         android:textSize="30sp"
+        android:background="@drawable/rounded_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/button4"
-        android:layout_width="150dp"
-        android:layout_height="110dp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:onClick="No"
         android:text="@string/no"
         android:textAlignment="center"
         android:textSize="30sp"
+        android:background="@drawable/rounded_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -46,6 +48,42 @@
         android:textAlignment="center"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/your_state_progress_bar_id"
+        app:layout_constraintVertical_bias="0.307" />
+
+
+    <com.kofigyan.stateprogressbar.StateProgressBar
+        android:id="@+id/your_state_progress_bar_id"
+        android:layout_width="361dp"
+        android:layout_height="33dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.545"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView5"
+        app:spb_animateToCurrentProgressState="true"
+        app:spb_checkStateCompleted="true"
+        app:spb_currentStateDescriptionColor="#009688"
+        app:spb_currentStateNumber="one"
+        app:spb_maxStateNumber="two"
+        app:spb_stateBackgroundColor="#BDBDBD"
+        app:spb_stateDescriptionColor="#808080"
+        app:spb_stateForegroundColor="#009688"
+        app:spb_stateNumberBackgroundColor="#808080"
+        app:spb_stateNumberForegroundColor="#eeeeee" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="wrap_content"
+        android:layout_height="72dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/bumpy_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/custom_toolbar" />
