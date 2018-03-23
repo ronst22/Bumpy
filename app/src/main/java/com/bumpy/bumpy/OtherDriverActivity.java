@@ -337,6 +337,7 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
 //
 //    }
     
+}
     private void writeAccident(Date localDateTime, boolean called_ambulance, boolean called_police,
                                String driverName, String driverId, String carNumber, String insuranceNum, String driverLicenseNum) {
         String key = mDatabase.child("accidents").push().getKey();
