@@ -50,19 +50,21 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OtherDriverActivity extends BaseBumpyActivity {
+public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter.CreateNdefMessageCallback {
 
     public static final String ERROR_DETECTED = "No NFC tag detected!";
     public static final String WRITE_SUCCESS = "Text written to the NFC tag successfully!";
     public static final String WRITE_ERROR = "Error during writing, is the NFC tag close enough to your device?";
     public static final int MY_SOCKET_TIMEOUT_MS = 5000;
     boolean got_response;
-    NfcAdapter nfcAdapter;
+    NfcAdapter mNfcAdapter;
     PendingIntent pendingIntent;
     IntentFilter writeTagFilters[];
     boolean writeMode;
     Tag myTag;
     Context context;
+    TextView textView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,33 +73,72 @@ public class OtherDriverActivity extends BaseBumpyActivity {
         super.initToolbar();
         context = this;
         got_response = false;
-//        Toast.makeText(this, "Waiting for nfc", Toast.LENGTH_LONG).show();
-//        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-//        if (nfcAdapter == null) {
-//            // Stop here, we definitely need NFC
-//            Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
-//            finish();
-//        }
-//        if (!nfcAdapter.isEnabled()) {
-//            Toast.makeText(this, "Please enable NFC via Settings.", Toast.LENGTH_LONG).show();
-//        }
-//        nfcAdapter.setNdefPushMessageCallback(this, this);
 
-        // Open the NFC
-        // We need to pass the userID
-        NdefRecord mimeRecord = NdefRecord.createMime("application/vnd.com.example.android.beam",
-                "InertUserIDHere".getBytes(Charset.forName("US-ASCII")));
+        BeamInfoToOtherDevice beamInfo = new BeamInfoToOtherDevice();
 
+        Toast.makeText(this, "Waiting for nfc", Toast.LENGTH_LONG).show();
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (mNfcAdapter == null) {
+            // Stop here, we definitely need NFC
+            Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
+            finish();
+        }
+        if (!mNfcAdapter.isEnabled()) {
+            Toast.makeText(this, "Please enable NFC via Settings.", Toast.LENGTH_LONG).show();
+        }
+
+        // Register callback
+        mNfcAdapter.setNdefPushMessageCallback(this, this);
     }
 
-//    @Override
-//    public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
-//        Toast.makeText(this, "Sending a message to you", Toast.LENGTH_LONG).show();
-//        String message = "Blabla amnonn!!!";
-//        NdefRecord ndefRecord = NdefRecord.createMime("text/plain", message.getBytes());
-//        NdefMessage ndefMessage = new NdefMessage(ndefRecord);
-//        return ndefMessage;
+    @Override
+    public NdefMessage createNdefMessage(NfcEvent event) {
+        String text = ("Beam me up, Android!\n\n" +
+                "Beam Time: " + System.currentTimeMillis());
+        NdefMessage msg = new NdefMessage(
+                new NdefRecord[] { NdefRecord.createMime(
+                        "BeamSucceeded", text.getBytes())
+                        /**
+                         * The Android Application Record (AAR) is commented out. When a device
+                         * receives a push with an AAR in it, the application specified in the AAR
+                         * is guaranteed to run. The AAR overrides the tag dispatch system.
+                         * You can add it back in to guarantee that this
+                         * activity starts when receiving a beamed message. For now, this code
+                         * uses the tag dispatch system.
+                         *
+                        */
+                        //,NdefRecord.createApplicationRecord("com.example.android.beam")
+                });
+
+        return msg;
+    }
+
+//    public void onResume() {
+//
+//        // Check to see that the Activity started due to an Android Beam
+//        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+//            processIntent(getIntent());
+//        }
 //    }
+//
+//    public void onNewIntent(Intent intent) {
+//        // onResume gets called after this to handle the intent
+//        setIntent(intent);
+//    }
+
+    /**
+     * Parses the NDEF Message from the intent and prints to the TextView
+     */
+    void processIntent(Intent intent) {
+        textView = (TextView) findViewById(R.id.textView);
+        Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
+                NfcAdapter.EXTRA_NDEF_MESSAGES);
+
+        // only one message sent during the beam
+        NdefMessage msg = (NdefMessage) rawMsgs[0];
+        // record 0 contains the MIME type, record 1 is the AAR, if present
+        textView.setText(new String(msg.getRecords()[0].getPayload()));
+    }
 
     public void Cancel(View view) {
         new AlertDialog.Builder(this)
@@ -247,13 +288,12 @@ public class OtherDriverActivity extends BaseBumpyActivity {
 //        Toast.makeText(this, "Waiting for NDEF Message", Toast.LENGTH_LONG).show();
 
     }
-
+    
     private void writeAccident(Date localDateTime, boolean called_ambulance, boolean called_police,
                                String driverName, String driverId, String carNumber, String insuranceNum, String driverLicenseNum) {
         String key = mDatabase.child("accidents").push().getKey();
-        DriverData driverData = new DriverData(driverName, driverId, carNumber, insuranceNum, driverLicenseNum);
         Accident accident = new Accident(localDateTime, called_ambulance, called_police,
-                                         driverData);
+                                         new DriverData(driverName, driverId, carNumber, insuranceNum, driverLicenseNum));
         Map<String, Object> accidentValues = accident.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
@@ -261,7 +301,6 @@ public class OtherDriverActivity extends BaseBumpyActivity {
         childUpdates.put("/user-accidents/" + mAuth.getCurrentUser().getUid() + "/" + key, accidentValues);
 
         mDatabase.updateChildren(childUpdates);
-        got_response = true;
     }
 
 }
