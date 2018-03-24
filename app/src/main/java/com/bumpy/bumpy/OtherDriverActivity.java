@@ -74,21 +74,20 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
         context = this;
         got_response = false;
 
-        BeamInfoToOtherDevice beamInfo = new BeamInfoToOtherDevice();
-
         Toast.makeText(this, "Waiting for nfc", Toast.LENGTH_LONG).show();
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
             // Stop here, we definitely need NFC
             Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
-            finish();
+//            finish();
         }
-        if (!mNfcAdapter.isEnabled()) {
+        else if (!mNfcAdapter.isEnabled()) {
             Toast.makeText(this, "Please enable NFC via Settings.", Toast.LENGTH_LONG).show();
         }
-
-        // Register callback
-        mNfcAdapter.setNdefPushMessageCallback(this, this);
+        else {
+            // Register callback
+            mNfcAdapter.setNdefPushMessageCallback(this, this);
+        }
     }
 
     @Override
@@ -301,6 +300,7 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
         childUpdates.put("/user-accidents/" + mAuth.getCurrentUser().getUid() + "/" + key, accidentValues);
 
         mDatabase.updateChildren(childUpdates);
+        got_response = true;
     }
 
 }
