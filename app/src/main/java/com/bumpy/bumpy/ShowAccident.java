@@ -1,6 +1,7 @@
 package com.bumpy.bumpy;
 
 import android.content.Intent;
+<<<<<<< HEAD
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -8,6 +9,13 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+=======
+import android.content.pm.PackageManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+>>>>>>> Add map support
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,7 +31,17 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class ShowAccident extends BaseBumpyActivity {
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+public class ShowAccident extends BaseBumpyActivity implements OnMapReadyCallback {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +88,10 @@ public class ShowAccident extends BaseBumpyActivity {
 
             linLay.addView(image);
         }
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);;
     }
 
     @Override
@@ -93,5 +115,17 @@ public class ShowAccident extends BaseBumpyActivity {
             Log.e("shit", "Error getting bitmap", e);
         }
         return bm;
+    }
+    
+    @Override
+    public void onMapReady(GoogleMap map) {
+        map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        CameraUpdate center=
+                CameraUpdateFactory.newLatLng(new LatLng(40.76793169992044,
+                        -73.98180484771729));
+        CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
+
+        map.moveCamera(center);
+        map.animateCamera(zoom);
     }
 }
