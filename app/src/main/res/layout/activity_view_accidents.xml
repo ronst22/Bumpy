@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     tools:context="com.bumpy.bumpy.ViewAccidentsActivity">
 
     <include
@@ -12,13 +13,11 @@
 
     <ListView
         android:id="@+id/accidents"
-        android:layout_width="368dp"
-        android:layout_height="495dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:divider="@color/material_blue_grey_800"
         android:dividerHeight="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginTop="?android:attr/actionBarSize"
+        android:listSelector="#C2185B"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.bumpy.bumpy;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -21,6 +22,16 @@ public class ShowAccident extends BaseBumpyActivity {
         EditText driverLicense = (EditText) findViewById(R.id.driverLicense);
 
         date.setText(accident.localDateTime.toString());
-        date.setText(accident.driverData.driverName.toString());
+        dName.setText(accident.driverData.driverName.toString());
+        dID.setText(accident.driverData.driverId);
+        cNum.setText(accident.driverData.carNumber);
+        insuNum.setText(accident.driverData.insuranceNum);
+        driverLicense.setText(accident.driverData.driverLicenseNum);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ShowAccident.this, ViewAccidentsActivity.class);
+        startActivity(intent);
     }
 }
