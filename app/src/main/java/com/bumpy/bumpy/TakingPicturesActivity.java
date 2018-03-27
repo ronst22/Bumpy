@@ -4,11 +4,22 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
 
 public class TakingPicturesActivity extends BaseBumpyActivity {
 
@@ -47,11 +58,40 @@ public class TakingPicturesActivity extends BaseBumpyActivity {
             matrix.postRotate(90);
             Bitmap scaledBitmap = Bitmap.createScaledBitmap(imageBitmap, imageBitmap.getWidth(),
                                                             imageBitmap.getHeight(),true);
-            Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap .getWidth(), scaledBitmap .getHeight(), matrix, true);
+            Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap .getWidth(),
+                                                       scaledBitmap .getHeight(), matrix, true);
 
             // Put the image in the button
             BitmapDrawable drawable = new BitmapDrawable(getResources(), rotatedBitmap);
             img.setBackground(drawable);
+
+            // Save the picture to the db
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//            byte[] data = baos.toByteArray();
+            // Create a storage reference from our app
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+
+            // Create a reference to "mountains.jpg"
+            StorageReference mountainsRef = storageRef.child("mountains.jpg");
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            rotatedBitmap .compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data2 = baos.toByteArray();
+
+            UploadTask uploadTask = mountainsRef.putBytes(data2);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                }
+            });
         }
     }
 
