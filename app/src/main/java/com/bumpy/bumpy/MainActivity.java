@@ -1,7 +1,9 @@
 package com.bumpy.bumpy;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -27,6 +30,11 @@ import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,6 +57,7 @@ public class MainActivity extends BaseBumpyActivity {
         profilePictureView = (ProfilePictureView) findViewById(R.id.friendProfilePicture);
         if (mAuth.getCurrentUser() != null) {
             profilePictureView.setProfileId(token.getUserId());
+            check_if_user_info_exists();
         }
         else
         {
@@ -70,4 +79,37 @@ public class MainActivity extends BaseBumpyActivity {
         Intent intent = new Intent(this, ViewAccidentsActivity.class);
         startActivity(intent);
     }
+
+    public void check_if_user_info_exists()
+    {
+        // Check if the user has already entered user info
+        DatabaseReference mUserReference = FirebaseDatabase.getInstance().getReference()
+                .child("users").child(mAuth.getCurrentUser().getUid());
+
+        // Attach a listener to read the data at our posts reference
+        mUserReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // If the result is null, it means the user did not enter his info yet
+                if ((String) dataSnapshot.child("driverId").getValue() == null)
+                {
+                    new AlertDialog.Builder(MainActivity.this, R.style.Theme_AppCompat_Dialog)
+                            .setMessage("Before you continue, please insert user info\r\n")
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent intent = new Intent(MainActivity.this, UserDataActivity.class);
+                                    startActivity(intent);
+                                }
+                            })
+                            .show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
 }
