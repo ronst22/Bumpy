@@ -78,6 +78,8 @@ public class FBLoginActivity extends BaseBumpyActivity {
         super.initToolbar();
 
         if (isLoggedInToFacebook()) {
+            first_name = Profile.getCurrentProfile().getFirstName();
+            last_name = Profile.getCurrentProfile().getLastName();
             startActivity(new Intent(FBLoginActivity.this, MainActivity.class));
         }
 
@@ -88,6 +90,10 @@ public class FBLoginActivity extends BaseBumpyActivity {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                // Set the first and last name
+                FBLoginActivity.first_name = Profile.getCurrentProfile().getFirstName();
+                FBLoginActivity.last_name = Profile.getCurrentProfile().getLastName();
+
                 final ProgressDialog progressDialog = new ProgressDialog(FBLoginActivity.this,
                         R.style.Theme_AppCompat_Dialog);
                 progressDialog.setIndeterminate(true);
