@@ -106,7 +106,7 @@ public class UserDataActivity extends BaseBumpyActivity {
         if (dName.getText().length() <= 2)
         {
             Toast.makeText(getApplicationContext(),
-                    "Please insert the other driver name",
+                    "Please insert your name",
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -114,7 +114,7 @@ public class UserDataActivity extends BaseBumpyActivity {
         if (dID.getText().length() <= 2)
         {
             Toast.makeText(getApplicationContext(),
-                    "Please insert the other driver identification number",
+                    "Please insert your identification number",
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -122,7 +122,7 @@ public class UserDataActivity extends BaseBumpyActivity {
         if (cNum.getText().length() <= 2)
         {
             Toast.makeText(getApplicationContext(),
-                    "Please insert the other driver car number",
+                    "Please insert your car number",
                     Toast.LENGTH_LONG).show();
             return;
         }
@@ -130,7 +130,7 @@ public class UserDataActivity extends BaseBumpyActivity {
         if (insuNum.getText().length() <= 2)
         {
             Toast.makeText(getApplicationContext(),
-                    "Please insert the other driver insurance number",
+                    "Please insert your insurance number",
                     Toast.LENGTH_LONG).show();
             return;
         }
