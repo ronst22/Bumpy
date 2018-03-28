@@ -96,7 +96,7 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
                 "Beam Time: " + System.currentTimeMillis());
         NdefMessage msg = new NdefMessage(
                 new NdefRecord[] { NdefRecord.createMime(
-                        "BeamSucceeded", text.getBytes())
+                        "text/plain", text.getBytes())
                         /**
                          * The Android Application Record (AAR) is commented out. When a device
                          * receives a push with an AAR in it, the application specified in the AAR
