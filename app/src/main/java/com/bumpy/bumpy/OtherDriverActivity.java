@@ -104,11 +104,10 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
         Log.d(TAG, "NFC Message transferring");
-        Toast.makeText(this, "Transfer user data over nfc", Toast.LENGTH_LONG).show();
         String text = mAuth.getCurrentUser().getUid();
         NdefMessage msg = new NdefMessage(
                 new NdefRecord[] { NdefRecord.createMime(
-                        "text/plain", text.getBytes())
+                        "plain/text", text.getBytes())
                         /**
                          * The Android Application Record (AAR) is commented out. When a device
                          * receives a push with an AAR in it, the application specified in the AAR
@@ -118,7 +117,7 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
                          * uses the tag dispatch system.
                          *
                         */
-                        //,NdefRecord.createApplicationRecord("com.example.android.beam")
+//                        ,NdefRecord.createApplicationRecord("com.bumpy.bumpy.OtherDriverActivity")
                 });
 
         return msg;
@@ -126,6 +125,7 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
 
     @Override
     public void onResume() {
+        Log.d(TAG, "OnResume of nfc message");
         super.onResume();
 
         // Check to see that the Activity started due to an Android Beam
@@ -136,6 +136,7 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
 
     @Override
     public void onNewIntent(Intent intent) {
+        Log.d(TAG, "Setting new intent after onResume");
         // onResume gets called after this to handle the intent
         setIntent(intent);
     }
@@ -144,6 +145,7 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
      * Parses the NDEF Message from the intent and prints to the TextView
      */
     void processIntent(Intent intent) {
+        Log.d(TAG, "Recieved data from nfc!!!!!!!!!!!!!!!!!!!");
 //        textView = (TextView) findViewById(R.id.textView);
         Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
                 NfcAdapter.EXTRA_NDEF_MESSAGES);

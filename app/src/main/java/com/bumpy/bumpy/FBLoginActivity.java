@@ -2,8 +2,10 @@ package com.bumpy.bumpy;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -155,8 +157,25 @@ public class FBLoginActivity extends BaseBumpyActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user == null) {
+            // Make sure the user is disconnected
+            // Alert the user about it
+//            new android.os.Handler().postDelayed(
+//                    new Runnable() {
+//                        public void run() {
+//                                new AlertDialog.Builder(FBLoginActivity.this, R.style.Theme_AppCompat_Dialog)
+//                                        .setMessage("Failed to login\r\n")
+//                                        .setCancelable(false)
+//                                        .setPositiveButton("Return", new DialogInterface.OnClickListener() {
+//                                            public void onClick(DialogInterface dialog, int id) {
+//                                                FBLoginActivity.this.Logout();
+//                                            }
+//                                        })
+//                                        .show();
+//                    }}, 3000);
+            this.Logout();
             return;
         }
+
         // Change the profile picture displayed
         ProfilePictureView profilePictureView;
         profilePictureView = (ProfilePictureView) findViewById(R.id.friendProfilePicture);
