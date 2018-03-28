@@ -81,6 +81,14 @@ public class BaseBumpyActivity extends AppCompatActivity {
         }).executeAsync();
     }*/
 
+    protected void Logout()
+    {
+        FirebaseAuth.getInstance().signOut();
+        LoginManager.getInstance().logOut();
+        Intent intent = new Intent(this, FBLoginActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
@@ -91,10 +99,7 @@ public class BaseBumpyActivity extends AppCompatActivity {
                 // User chose the "Settings" item, show the app settings UI...
                 return true;
             case R.id.logout:
-                FirebaseAuth.getInstance().signOut();
-                LoginManager.getInstance().logOut();
-                intent = new Intent(this, FBLoginActivity.class);
-                startActivity(intent);
+                this.Logout();
                 return true;
             case R.id.update_user:
                 intent = new Intent(this, UserDataActivity.class);
