@@ -20,6 +20,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.sql.Time;
 
 public class TakingPicturesActivity extends BaseBumpyActivity {
 
@@ -72,8 +73,8 @@ public class TakingPicturesActivity extends BaseBumpyActivity {
             // Create a storage reference from our app
             StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
-            // Create a reference to "mountains.jpg"
-            StorageReference mountainsRef = storageRef.child("mountains.jpg");
+            // Create a reference to the file name
+            StorageReference mountainsRef = storageRef.child("" + System.currentTimeMillis());
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             rotatedBitmap .compress(Bitmap.CompressFormat.JPEG, 100, baos);
