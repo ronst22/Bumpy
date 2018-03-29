@@ -76,6 +76,7 @@ public class TakingPicturesActivity extends BaseBumpyActivity {
             // Create a reference to the file name
             StorageReference mountainsRef = storageRef.child("" + System.currentTimeMillis());
 
+            // Store the file in the storage
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             rotatedBitmap .compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data2 = baos.toByteArray();
@@ -93,6 +94,11 @@ public class TakingPicturesActivity extends BaseBumpyActivity {
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 }
             });
+
+            // Save the file info in the db
+            Bundle bundle = getIntent().getExtras();
+
+            String accident_id= bundle.getString("accident_id");
         }
     }
 
