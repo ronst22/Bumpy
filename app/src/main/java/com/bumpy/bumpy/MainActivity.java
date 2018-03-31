@@ -61,7 +61,9 @@ public class MainActivity extends BaseBumpyActivity {
         }
         else
         {
-            LoginManager.getInstance().logOut();
+            // Case the user is not truly connected or something make sure he is logged out
+            // and go to facebook login activity
+            this.Logout();
             Intent loginIntent = new Intent(this, FBLoginActivity.class);
             startActivity(loginIntent);
         }
