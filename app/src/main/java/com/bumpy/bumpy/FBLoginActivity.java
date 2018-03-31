@@ -44,7 +44,9 @@ public class FBLoginActivity extends BaseBumpyActivity {
     private ProfileTracker mProfileTracker;
     public static String first_name = "";
     public static String last_name = "";
+    ProgressDialog mProgDial;
     LoginResult mLresult;
+    public static String TAG = "FBLoginActivity";
 
     public boolean isLoggedInToFacebook() {
         return mAuth.getCurrentUser() != null;
@@ -60,12 +62,12 @@ public class FBLoginActivity extends BaseBumpyActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d("FBLoginActivity", "signInWithCredential:success");
+                            Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w("FBLoginActivity", "signInWithCredential:failure", task.getException());
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(FBLoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
@@ -82,10 +84,17 @@ public class FBLoginActivity extends BaseBumpyActivity {
         setContentView(R.layout.activity_fblogin);
         super.initToolbar();
 
+        mProgDial = new ProgressDialog(FBLoginActivity.this,
+                R.style.Theme_AppCompat_Dialog);
+        mProgDial.setIndeterminate(true);
+        mProgDial.setMessage("Authenticating...");
+
         if (isLoggedInToFacebook()) {
-            first_name = Profile.getCurrentProfile().getFirstName();
-            last_name = Profile.getCurrentProfile().getLastName();
-            startActivity(new Intent(FBLoginActivity.this, MainActivity.class));
+            mProgDial.show();
+            handleFacebookAccessToken(AccessToken.getCurrentAccessToken());
+//            first_name = Profile.getCurrentProfile().getFirstName();
+//            last_name = Profile.getCurrentProfile().getLastName();
+//            startActivity(new Intent(FBLoginActivity.this, MainActivity.class));
         }
 
         loginButton = (LoginButton) findViewById(R.id.login_button);
@@ -95,20 +104,15 @@ public class FBLoginActivity extends BaseBumpyActivity {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                final ProgressDialog progressDialog = new ProgressDialog(FBLoginActivity.this,
-                        R.style.Theme_AppCompat_Dialog);
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage("Authenticating...");
-                progressDialog.show();
+                mProgDial.show();
                 mLresult = loginResult;
                 if(Profile.getCurrentProfile() == null) {
                     mProfileTracker = new ProfileTracker() {
                         @Override
                         protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                            Log.v("facebook - profile", currentProfile.getFirstName());
+                            Log.v(TAG, currentProfile.getFirstName());
                             mProfileTracker.stopTracking();
                             handleFacebookAccessToken(mLresult.getAccessToken());
-                            progressDialog.dismiss();
                         }
                     };
                     // no need to call startTracking() on mProfileTracker
@@ -116,9 +120,8 @@ public class FBLoginActivity extends BaseBumpyActivity {
                 }
                 else {
                     Profile profile = Profile.getCurrentProfile();
-                    Log.v("facebook - profile", profile.getFirstName());
+                    Log.v(TAG, profile.getFirstName());
                     handleFacebookAccessToken(loginResult.getAccessToken());
-                    progressDialog.dismiss();
                 }
             }
 
@@ -129,6 +132,7 @@ public class FBLoginActivity extends BaseBumpyActivity {
 
             @Override
             public void onError(FacebookException error) {
+                Log.e(TAG, "Facebook login error: " + error.toString());
                 Toast.makeText(getApplicationContext(), "No internet connection", Toast.LENGTH_LONG).show();
             }
         });
@@ -184,6 +188,7 @@ public class FBLoginActivity extends BaseBumpyActivity {
         FBLoginActivity.first_name = Profile.getCurrentProfile().getFirstName();
         FBLoginActivity.last_name = Profile.getCurrentProfile().getLastName();
         Log.d("FB Logging", "Successful");
+        mProgDial.dismiss();
 
         startActivity(new Intent(FBLoginActivity.this, MainActivity.class));
     }
