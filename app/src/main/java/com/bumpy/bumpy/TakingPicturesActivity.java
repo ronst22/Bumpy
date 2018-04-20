@@ -8,21 +8,33 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.sql.Time;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TakingPicturesActivity extends BaseBumpyActivity {
+    private DatabaseReference mAccidentReference;
+    private ValueEventListener accidentListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +86,8 @@ public class TakingPicturesActivity extends BaseBumpyActivity {
             StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
             // Create a reference to the file name
-            StorageReference mountainsRef = storageRef.child("" + System.currentTimeMillis());
+            Long time = System.currentTimeMillis();
+            StorageReference mountainsRef = storageRef.child("" + time);
 
             // Store the file in the storage
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -96,10 +109,47 @@ public class TakingPicturesActivity extends BaseBumpyActivity {
             });
 
             // Save the file info in the db
-            Bundle bundle = getIntent().getExtras();
+            String key= getIntent().getStringExtra("accident_id");
 
-            String accident_id= bundle.getString("accident_id");
+            Map<String, Long> imagesValues;
+            imagesValues = new HashMap<String, Long>();
+            imagesValues.put((String) "image",(Long) time);
+
+            Map<String, Object> childUpdates = new HashMap<>();
+            childUpdates.put("/accidents/" + key, imagesValues);
+            childUpdates.put("/user-accidents/" + mAuth.getCurrentUser().getUid() + "/" + key, imagesValues);
+
+            mDatabase.updateChildren(childUpdates);
+//            mAccidentReference = FirebaseDatabase.getInstance().getReference()
+//                    .child("accidents").child(key);
+//            accidentListener = new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    // Get Post object and use the values to update the UI
+//                    for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+//                        Accident accident = Accident.CreateFromDB(childDataSnapshot);
+//                    }
+//                }
+//
+////            listView.setOnItemClickListener(this);
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//                    // Getting Post failed, log a message
+////                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+//                    // ...
+//                }
+//            };
+//            mAccidentReference.addValueEventListener(accidentListener);
         }
+    }
+
+    public void Finish(View view) {
+        Toast.makeText(getBaseContext(), "1", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, ViewAccidentsActivity.class);
+        Toast.makeText(getBaseContext(), "2", Toast.LENGTH_SHORT).show();
+        startActivity(intent);
+        Toast.makeText(getBaseContext(), "3", Toast.LENGTH_SHORT).show();
     }
 
     private String m_lastTag;

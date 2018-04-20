@@ -75,6 +75,7 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
     private DatabaseReference mUserData;
     private ValueEventListener mUserDataListener;
     public static String TAG = "OtherDriverActivity";
+    String mKey = null;
 
 
     @Override
@@ -258,7 +259,8 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
                     public void run() {
                         if (got_response) {
                             // On complete call either onLoginSuccess or onLoginFailed
-                            Intent intent = new Intent(OtherDriverActivity.this, ViewAccidentsActivity.class);
+                            Intent intent = new Intent(OtherDriverActivity.this, TakingPicturesActivity.class);
+                            intent.putExtra("accident_id", mKey);
                             startActivity(intent);
                         }
                         else {
@@ -336,18 +338,17 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
 ////        Toast.makeText(this, "Waiting for NDEF Message", Toast.LENGTH_LONG).show();
 //
 //    }
-    
-}
+
     private void writeAccident(Date localDateTime, boolean called_ambulance, boolean called_police,
                                String driverName, String driverId, String carNumber, String insuranceNum, String driverLicenseNum) {
-        String key = mDatabase.child("accidents").push().getKey();
+        mKey = mDatabase.child("accidents").push().getKey();
         Accident accident = new Accident(localDateTime, called_ambulance, called_police,
                                          new DriverData(driverName, driverId, carNumber, insuranceNum, driverLicenseNum));
         Map<String, Object> accidentValues = accident.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/accidents/" + key, accidentValues);
-        childUpdates.put("/user-accidents/" + mAuth.getCurrentUser().getUid() + "/" + key, accidentValues);
+        childUpdates.put("/accidents/" + mKey, accidentValues);
+        childUpdates.put("/user-accidents/" + mAuth.getCurrentUser().getUid() + "/" + mKey, accidentValues);
 
         mDatabase.updateChildren(childUpdates);
         got_response = true;
