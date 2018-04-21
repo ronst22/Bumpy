@@ -66,9 +66,10 @@ public class ViewAccidentsActivity extends BaseBumpyActivity implements AdapterV
 //
 //        ListView listView = (ListView) findViewById(R.id.accidents);
 //        listView.setAdapter(adapter);
-
         listView = (ListView) findViewById(R.id.accidents);
+
         listView.setOnItemClickListener(this);
+
         accidentArray = new ArrayList<>();
         accidentListener = new ValueEventListener() {
             @Override
@@ -82,7 +83,6 @@ public class ViewAccidentsActivity extends BaseBumpyActivity implements AdapterV
                     Log.d(TAG, "The accident is: " + accident);
                     accidentArray.add(accident);
                 }
-
                 ArrayAdapter adapter = new ArrayAdapter<>(ViewAccidentsActivity.this, R.layout.accident_item, accidentArray);
 
                 listView.setAdapter(adapter);

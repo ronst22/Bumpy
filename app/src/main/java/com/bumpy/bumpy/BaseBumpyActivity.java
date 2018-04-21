@@ -25,6 +25,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 /**
  * Created by ronst on 1/10/2018.
@@ -34,6 +36,7 @@ public class BaseBumpyActivity extends AppCompatActivity {
 
     protected FirebaseAuth mAuth;
     protected DatabaseReference mDatabase;
+    protected StorageReference mStorageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,7 @@ public class BaseBumpyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         // Make the user-accidents available offline
         DatabaseReference scoresRef = FirebaseDatabase.getInstance().getReference("user-accidents");

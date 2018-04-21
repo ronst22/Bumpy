@@ -41,6 +41,14 @@ public class TakingPicturesActivity extends BaseBumpyActivity {
         setContentView(R.layout.activity_taking_pictures);
         super.onCreate(savedInstanceState);
         super.initToolbar();
+
+        String key= getIntent().getStringExtra("accident_id");
+        Log.d("Taking pic", "shit 123");
+
+        mAccidentReference = FirebaseDatabase.getInstance().getReference()
+                .child("user-accidents").child(mAuth.getCurrentUser().getUid()).child(key).child("images");
+        Log.d("Taking pic", "shit 321");
+
     }
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -78,23 +86,16 @@ public class TakingPicturesActivity extends BaseBumpyActivity {
             BitmapDrawable drawable = new BitmapDrawable(getResources(), rotatedBitmap);
             img.setBackground(drawable);
 
-            // Save the picture to the db
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-//            byte[] data = baos.toByteArray();
-            // Create a storage reference from our app
-            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-
             // Create a reference to the file name
-            Long time = System.currentTimeMillis();
-            StorageReference mountainsRef = storageRef.child("" + time);
+            final Long time = System.currentTimeMillis();
+            StorageReference storageImageRef = mStorageRef.child("" + time);
 
             // Store the file in the storage
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             rotatedBitmap .compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data2 = baos.toByteArray();
 
-            UploadTask uploadTask = mountainsRef.putBytes(data2);
+            UploadTask uploadTask = storageImageRef.putBytes(data2);
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
@@ -109,47 +110,37 @@ public class TakingPicturesActivity extends BaseBumpyActivity {
             });
 
             // Save the file info in the db
-            String key= getIntent().getStringExtra("accident_id");
+            accidentListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Map<String,Object> accident_map = (Map<String,Object>) dataSnapshot.getValue();
 
-            Map<String, Long> imagesValues;
-            imagesValues = new HashMap<String, Long>();
-            imagesValues.put((String) "image",(Long) time);
+                    // If this is the first pic
+                    if (accident_map == null)
+                    {
+                        accident_map = new HashMap<String,Object>();
+                    }
+                    accident_map.put(time.toString(), time.toString());
+                    mAccidentReference.updateChildren(accident_map);
+                }
 
-            Map<String, Object> childUpdates = new HashMap<>();
-            childUpdates.put("/accidents/" + key, imagesValues);
-            childUpdates.put("/user-accidents/" + mAuth.getCurrentUser().getUid() + "/" + key, imagesValues);
+//            listView.setOnItemClickListener(this);
 
-            mDatabase.updateChildren(childUpdates);
-//            mAccidentReference = FirebaseDatabase.getInstance().getReference()
-//                    .child("accidents").child(key);
-//            accidentListener = new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-//                    // Get Post object and use the values to update the UI
-//                    for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
-//                        Accident accident = Accident.CreateFromDB(childDataSnapshot);
-//                    }
-//                }
-//
-////            listView.setOnItemClickListener(this);
-//
-//                @Override
-//                public void onCancelled(DatabaseError databaseError) {
-//                    // Getting Post failed, log a message
-////                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-//                    // ...
-//                }
-//            };
-//            mAccidentReference.addValueEventListener(accidentListener);
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // Getting Post failed, log a message
+//                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                    // ...
+                }
+            };
+
+            mAccidentReference.addValueEventListener(accidentListener);
         }
     }
 
     public void Finish(View view) {
-        Toast.makeText(getBaseContext(), "1", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, ViewAccidentsActivity.class);
-        Toast.makeText(getBaseContext(), "2", Toast.LENGTH_SHORT).show();
         startActivity(intent);
-        Toast.makeText(getBaseContext(), "3", Toast.LENGTH_SHORT).show();
     }
 
     private String m_lastTag;
