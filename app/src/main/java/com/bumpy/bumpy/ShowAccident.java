@@ -1,7 +1,6 @@
 package com.bumpy.bumpy;
 
 import android.content.Intent;
-<<<<<<< HEAD
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -9,13 +8,13 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-=======
 import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
->>>>>>> Add map support
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,10 +37,24 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class ShowAccident extends BaseBumpyActivity implements OnMapReadyCallback {
+
+    public static String TAG = "ShowAccident";
+    private DatabaseReference mAccidentReference;
+    private ValueEventListener accidentListener;
+    private ArrayList<Accident> accidentArray;
+    private Accident mCurrAccident;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +62,7 @@ public class ShowAccident extends BaseBumpyActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_show_accident);
         super.initToolbar();
 
-        Accident accident = ViewAccidentsActivity.currAccident;
+        mCurrAccident = ViewAccidentsActivity.currAccident;
         EditText date = (EditText) findViewById(R.id.datetime);
         EditText dName = (EditText) findViewById(R.id.driverName);
         EditText dID = (EditText) findViewById(R.id.driverID);
@@ -57,12 +70,11 @@ public class ShowAccident extends BaseBumpyActivity implements OnMapReadyCallbac
         EditText insuNum = (EditText) findViewById(R.id.insuranceNum);
         EditText driverLicense = (EditText) findViewById(R.id.driverLicense);
 
-        date.setText(accident.localDateTime.toString());
-        dName.setText(accident.driverData.driverName.toString());
-        dID.setText(accident.driverData.driverId);
-        cNum.setText(accident.driverData.carNumber);
-        insuNum.setText(accident.driverData.insuranceNum);
-        driverLicense.setText(accident.driverData.driverLicenseNum);
+        date.setText(mCurrAccident.localDateTime.toString());
+        dName.setText(mCurrAccident.driverData.driverName.toString());
+        dID.setText(mCurrAccident.driverData.driverId);
+        cNum.setText(mCurrAccident.driverData.carNumber);
+        insuNum.setText(mCurrAccident.driverData.insuranceNum);
 
         final LinearLayout linLay = (LinearLayout)findViewById(R.id.linear_layout);
 
@@ -119,13 +131,14 @@ public class ShowAccident extends BaseBumpyActivity implements OnMapReadyCallbac
     
     @Override
     public void onMapReady(GoogleMap map) {
-        map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
-        CameraUpdate center=
-                CameraUpdateFactory.newLatLng(new LatLng(40.76793169992044,
-                        -73.98180484771729));
-        CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
+        map.addMarker(new MarkerOptions().position(mCurrAccident.location).title("Marker"));
 
-        map.moveCamera(center);
-        map.animateCamera(zoom);
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(0,0))      // Sets the center of the map to Mountain View
+                .zoom(17)                   // Sets the zoom
+                .bearing(90)                // Sets the orientation of the camera to east
+                .tilt(30)                   // Sets the tilt of the camera to 30 degrees
+                .build();                   // Creates a CameraPosition from the builder
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 }
