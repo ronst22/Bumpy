@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import android.widget.ScrollView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -55,6 +56,7 @@ public class ShowAccident extends BaseBumpyActivity implements OnMapReadyCallbac
     private ValueEventListener accidentListener;
     private ArrayList<Accident> accidentArray;
     private Accident mCurrAccident;
+    private ScrollView mScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +106,9 @@ public class ShowAccident extends BaseBumpyActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);;
+        SupportMapFragment mapFragment = (SupportMapFragment) ( getSupportFragmentManager()
+                .findFragmentById(R.id.map));
+        mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -131,6 +136,17 @@ public class ShowAccident extends BaseBumpyActivity implements OnMapReadyCallbac
     
     @Override
     public void onMapReady(GoogleMap map) {
+        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        map.getUiSettings().setZoomControlsEnabled(true);
+        mScrollView = (ScrollView) findViewById(R.id.scrollviewMap); //parent scrollview in xml, give your scrollview id value
+
+        ((WorkaroundMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                .setListener(new WorkaroundMapFragment.OnTouchListener() {
+                    @Override
+                    public void onTouch() {
+                        mScrollView.requestDisallowInterceptTouchEvent(true);
+                    }
+                });
         map.addMarker(new MarkerOptions().position(mCurrAccident.location).title("Marker"));
 
         CameraPosition cameraPosition = new CameraPosition.Builder()

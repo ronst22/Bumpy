@@ -92,6 +92,7 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
     private GoogleApiClient mGoogleApiClient;
     private LatLng location;
     public final int MY_REQ_CODE = 12345;
+    private boolean got_location = false;
 
 
     @Override
@@ -339,9 +340,22 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
     public static String driverLicenseNum;
 
     public void sendData() {
-        writeAccident(Calendar.getInstance().getTime(), Ambulance.called_ambulance,
-                PoliceActivity.called_police, this.location, driverName, driverId,
-                carNumber, insuranceNum, driverLicenseNum);
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        if (got_location) {
+                            writeAccident(Calendar.getInstance().getTime(), Ambulance.called_ambulance,
+                                    PoliceActivity.called_police, location, driverName, driverId,
+                                    carNumber, insuranceNum, driverLicenseNum);
+                        }
+                        else {
+                            Log.d(TAG, "No location available");
+                            writeAccident(Calendar.getInstance().getTime(), Ambulance.called_ambulance,
+                                    PoliceActivity.called_police, location, driverName, driverId,
+                                    carNumber, insuranceNum, driverLicenseNum);
+                        }
+                    }
+                }, 5000);
 //
 //        JSONObject postparams = null;
 //        try {

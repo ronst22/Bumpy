@@ -42,7 +42,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAGkr_8zy9C3gydRIUgLsxceuMiIN15uh4"/>
+            android:value="AIzaSyBvqDGrSX4cMpVRQQ1JSGY2G5ftooaDO-k"/>
 
         <activity android:name=".FBLoginActivity">
             <intent-filter>
