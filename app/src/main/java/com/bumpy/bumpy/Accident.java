@@ -52,6 +52,14 @@ public class Accident {
 //        this.location = new LatLng(0, 0);
 //    }
 
+    public Accident(Date localDateTime, boolean called_ambulance, boolean called_police, DriverData driverData, LatLng location) {
+        this.localDateTime = localDateTime;
+        this.called_ambulance = called_ambulance;
+        this.called_police = called_police;
+        this.driverData = driverData;
+        this.location = location;
+    }
+
     public Accident(Date localDateTime, boolean called_ambulance, boolean called_police, DriverData driverData, LatLng location, ArrayList<String> images) {
         this.localDateTime = localDateTime;
         this.called_ambulance = called_ambulance;
@@ -87,9 +95,13 @@ public class Accident {
                 tmp_list.add(value);
             }
         }
-        LatLng location = new LatLng(0, 0);
+        LatLng location = new LatLng(0.0, 0.0);
         if (snapshot.hasChild("latitude") && snapshot.hasChild("longtitude")) {
-            location = new LatLng((long) snapshot.child("latitude").getValue(), (long) snapshot.child("longtitude").getValue());
+            try {
+                location = new LatLng((Double) snapshot.child("latitude").getValue(), (Double) snapshot.child("longtitude").getValue());
+            } catch(Exception msg) {
+                location = new LatLng(0.0, 0.0);
+            }
         }
 
         return new Accident(date,

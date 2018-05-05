@@ -77,11 +77,12 @@ public class ShowAccident extends BaseBumpyActivity implements OnMapReadyCallbac
         dID.setText(mCurrAccident.driverData.driverId);
         cNum.setText(mCurrAccident.driverData.carNumber);
         insuNum.setText(mCurrAccident.driverData.insuranceNum);
+        driverLicense.setText(mCurrAccident.driverData.driverLicenseNum);
 
         final LinearLayout linLay = (LinearLayout)findViewById(R.id.linear_layout);
 
         //add image to imageview
-        for (String num : accident.images) {
+        for (String num : mCurrAccident.images) {
             final ImageView image = new ImageView(this);
             Log.d("found image", num);
             mStorageRef.child(num).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -105,9 +106,6 @@ public class ShowAccident extends BaseBumpyActivity implements OnMapReadyCallbac
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);;
-        SupportMapFragment mapFragment = (SupportMapFragment) ( getSupportFragmentManager()
-                .findFragmentById(R.id.map));
         mapFragment.getMapAsync(this);
     }
 
@@ -150,7 +148,7 @@ public class ShowAccident extends BaseBumpyActivity implements OnMapReadyCallbac
         map.addMarker(new MarkerOptions().position(mCurrAccident.location).title("Marker"));
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(0,0))      // Sets the center of the map to Mountain View
+                .target(mCurrAccident.location)      // Sets the center of the map to Mountain View
                 .zoom(17)                   // Sets the zoom
                 .bearing(90)                // Sets the orientation of the camera to east
                 .tilt(30)                   // Sets the tilt of the camera to 30 degrees

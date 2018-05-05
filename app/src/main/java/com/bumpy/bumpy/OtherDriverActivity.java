@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -45,6 +46,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderApi;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -71,7 +74,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter.CreateNdefMessageCallback,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     public static final String ERROR_DETECTED = "No NFC tag detected!";
     public static final String WRITE_SUCCESS = "Text written to the NFC tag successfully!";
@@ -93,7 +96,8 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
     private LatLng location;
     public final int MY_REQ_CODE = 12345;
     private boolean got_location = false;
-
+    LocationRequest locationRequest;
+    FusedLocationProviderApi fusedLocationProviderApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +106,7 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
         super.initToolbar();
         context = this;
         got_response = false;
-        location = new LatLng(0, 0);
+        location = new LatLng(0.0, 0.0);
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
@@ -140,6 +144,26 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
             // Register callback
             mNfcAdapter.setNdefPushMessageCallback(this, this);
             Toast.makeText(this, "NFC Ready", Toast.LENGTH_LONG).show();
+        }
+
+        LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        getLocation();
+    }
+
+    private void getLocation(){
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(1);
+        locationRequest.setFastestInterval(1);
+        fusedLocationProviderApi = LocationServices.FusedLocationApi;
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
         }
     }
 
@@ -292,17 +316,6 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-
         sendData();
         Log.i("OtherDriverActivity", "Send message of an accident");
 
@@ -435,6 +448,9 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
 
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_REQ_CODE);
             } else {
 
                 // No explanation needed, we can request the permission.
@@ -449,16 +465,24 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
                 // app-defined int constant. The callback method gets the
                 // result of the request.
             }
-        } else {
-            Log.d(TAG, "Getting the location!!!!!");
-            Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
-            if (mLastLocation != null) {
-                Log.d(TAG, "Get last location: " + mLastLocation.getLatitude() + ", " + mLastLocation.getLongitude());
-                location = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                got_location = true;
-            }
         }
+        else {
+            fusedLocationProviderApi.requestLocationUpdates(mGoogleApiClient,  locationRequest, this);
+        }
+
+//        Log.d(TAG, "Getting the location!!!!!");
+//            Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+//                    mGoogleApiClient);
+//            if (mLastLocation != null) {
+//                Log.d(TAG, "Get last location: " + mLastLocation.getLatitude() + ", " + mLastLocation.getLongitude());
+//                location = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+//                got_location = true;
+//        }
+    }
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG, "THIS IS THE LOCATION KOLOLOLOLOLO!!!!!!!!! " + location.getLatitude() + ", " + location.getLongitude());
+        this.location = new LatLng(location.getLatitude(), location.getLongitude());
     }
 
     @Override
@@ -467,8 +491,6 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
             if (permissions.length == 1 &&
                     permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            } else {
-                location = new LatLng(0, 0);
             }
         }
     }
@@ -476,8 +498,9 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
     private void writeAccident(Date localDateTime, boolean called_ambulance, boolean called_police, LatLng location,
                                String driverName, String driverId, String carNumber, String insuranceNum, String driverLicenseNum) {
         mKey = mDatabase.child("accidents").push().getKey();
-        Accident accident = new Accident(localDateTime, called_ambulance, called_police, location,
-                                         new DriverData(driverName, driverId, carNumber, insuranceNum, driverLicenseNum));
+        Accident accident = new Accident(localDateTime, called_ambulance, called_police,
+                new DriverData(driverName, driverId, carNumber, insuranceNum, driverLicenseNum), location);
+        Log.d(TAG, "The location is: " + location.latitude + ", " + location.longitude);
         Map<String, Object> accidentValues = accident.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
