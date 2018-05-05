@@ -52,8 +52,8 @@ public class AmbulanceQuestion implements IState {
 
         // set the layoutParams on the button
         btnYes.setLayoutParams(params);
-
         // Set click listener for button
+
         btnYes.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // TODO: Call almbulance

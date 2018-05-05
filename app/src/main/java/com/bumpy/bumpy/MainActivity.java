@@ -78,7 +78,8 @@ public class MainActivity extends BaseBumpyActivity {
 
     public void view_accidents(View view) {
 //        Intent intent = new Intent(this, DynamicActivity.class);
-        Intent intent = new Intent(this, ViewAccidentsActivity.class);
+//        Intent intent = new Intent(this, ViewAccidentsActivity.class);
+        Intent intent = new Intent(MainActivity.this, ViewAccidentsActivity.class);
         startActivity(intent);
     }
 

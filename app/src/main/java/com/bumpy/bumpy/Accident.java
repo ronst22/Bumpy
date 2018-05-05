@@ -10,8 +10,10 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.sql.Time;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,6 +26,7 @@ public class Accident {
     public boolean called_ambulance;
     public boolean called_police;
     public DriverData driverData;
+    public ArrayList<String> images;
 
     public Accident() {
         this.localDateTime = new Date();
@@ -35,6 +38,14 @@ public class Accident {
         this.called_ambulance = called_ambulance;
         this.called_police = called_police;
         this.driverData = driverData;
+    }
+
+    public Accident(Date localDateTime, boolean called_ambulance, boolean called_police, DriverData driverData, ArrayList<String> images) {
+        this.localDateTime = localDateTime;
+        this.called_ambulance = called_ambulance;
+        this.called_police = called_police;
+        this.driverData = driverData;
+        this.images = new ArrayList<String>(images);
     }
 
     @Exclude
@@ -52,10 +63,21 @@ public class Accident {
         Date date = new Date();
         HashMap<String, Long> map = (HashMap<String, Long>) snapshot.child("datetime").getValue();
         date.setTime(map.get("time"));
+        HashMap<String, String> image_map = (HashMap<String, String>) snapshot.child("images").getValue();
+
+        ArrayList<String> tmp_list = new ArrayList<String>();
+
+        if (image_map != null) {
+            for (String value : image_map.values()) {
+                tmp_list.add(value);
+            }
+        }
+
         return new Accident(date,
                 (boolean) snapshot.child("called_ambulance").getValue(),
                 (boolean) snapshot.child("called_police").getValue(),
-                    DriverData.CreateFromDB(snapshot));
+                    DriverData.CreateFromDB(snapshot),
+                tmp_list);
     }
 
     public String toString()
