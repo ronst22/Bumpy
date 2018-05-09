@@ -123,7 +123,7 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
         else {
             // Register callback
             mNfcAdapter.setNdefPushMessageCallback(this, this);
-            Toast.makeText(this, "Waiting for nfc", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "NFC Ready", Toast.LENGTH_LONG).show();
         }
     }
 
