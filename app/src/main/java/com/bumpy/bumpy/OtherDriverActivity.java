@@ -503,6 +503,17 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
         Log.d(TAG, "The location is: " + location.latitude + ", " + location.longitude);
         Map<String, Object> accidentValues = accident.toMap();
 
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "No Permission");
+        }
+        else {
+            Location loc = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+            Log.d(TAG, "THE LOCATOIN IS: " + loc);
+        }
+
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/accidents/" + mKey, accidentValues);
         childUpdates.put("/user-accidents/" + mAuth.getCurrentUser().getUid() + "/" + mKey, accidentValues);
