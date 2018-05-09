@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -16,6 +19,8 @@ import android.nfc.tech.Ndef;
 import android.os.Build;
 import android.os.Parcelable;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,12 +44,20 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderApi;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+
+import android.Manifest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,7 +73,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter.CreateNdefMessageCallback {
+public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter.CreateNdefMessageCallback,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     public static final String ERROR_DETECTED = "No NFC tag detected!";
     public static final String WRITE_SUCCESS = "Text written to the NFC tag successfully!";
@@ -78,7 +92,12 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
     private ValueEventListener mUserDataListener;
     public static String TAG = "OtherDriverActivity";
     String mKey = null;
-
+    private GoogleApiClient mGoogleApiClient;
+    private LatLng location;
+    public final int MY_REQ_CODE = 12345;
+    private boolean got_location = false;
+    LocationRequest locationRequest;
+    FusedLocationProviderApi fusedLocationProviderApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +106,7 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
         super.initToolbar();
         context = this;
         got_response = false;
+        location = new LatLng(0.0, 0.0);
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
@@ -124,6 +144,26 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
             // Register callback
             mNfcAdapter.setNdefPushMessageCallback(this, this);
             Toast.makeText(this, "NFC Ready", Toast.LENGTH_LONG).show();
+        }
+
+        LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        getLocation();
+    }
+
+    private void getLocation(){
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(1);
+        locationRequest.setFastestInterval(1);
+        fusedLocationProviderApi = LocationServices.FusedLocationApi;
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
         }
     }
 
@@ -303,7 +343,7 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
                         }
                         progressDialog.dismiss();
                     }
-                }, 3000);
+                }, 5000);
     }
 
     public static String driverName;
@@ -313,8 +353,22 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
     public static String driverLicenseNum;
 
     public void sendData() {
-        writeAccident(Calendar.getInstance().getTime(), Ambulance.called_ambulance, PoliceActivity.called_police,
-                      driverName, driverId, carNumber, insuranceNum, driverLicenseNum);
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        if (got_location) {
+                            writeAccident(Calendar.getInstance().getTime(), Ambulance.called_ambulance,
+                                    PoliceActivity.called_police, location, driverName, driverId,
+                                    carNumber, insuranceNum, driverLicenseNum);
+                        }
+                        else {
+                            Log.d(TAG, "No location available");
+                            writeAccident(Calendar.getInstance().getTime(), Ambulance.called_ambulance,
+                                    PoliceActivity.called_police, location, driverName, driverId,
+                                    carNumber, insuranceNum, driverLicenseNum);
+                        }
+                    }
+                }, 5000);
 //
 //        JSONObject postparams = null;
 //        try {
@@ -364,12 +418,101 @@ public class OtherDriverActivity extends BaseBumpyActivity implements NfcAdapter
 //
 //    }
 
-    private void writeAccident(Date localDateTime, boolean called_ambulance, boolean called_police,
+    @Override
+    public void onConnectionSuspended (int cause)
+    {
+
+    }
+
+    @Override
+    public void onConnectionFailed (ConnectionResult cause)
+    {
+
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        Log.d(TAG, "onConnection called waiting for location");
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "No Permission");
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                Log.d(TAG, "check if can ask for permision");
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_REQ_CODE);
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_REQ_CODE);
+
+                Log.d(TAG, "Asking for permission");
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+        else {
+            fusedLocationProviderApi.requestLocationUpdates(mGoogleApiClient,  locationRequest, this);
+        }
+
+//        Log.d(TAG, "Getting the location!!!!!");
+//            Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+//                    mGoogleApiClient);
+//            if (mLastLocation != null) {
+//                Log.d(TAG, "Get last location: " + mLastLocation.getLatitude() + ", " + mLastLocation.getLongitude());
+//                location = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+//                got_location = true;
+//        }
+    }
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG, "THIS IS THE LOCATION KOLOLOLOLOLO!!!!!!!!! " + location.getLatitude() + ", " + location.getLongitude());
+        this.location = new LatLng(location.getLatitude(), location.getLongitude());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == MY_REQ_CODE) {
+            if (permissions.length == 1 &&
+                    permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            }
+        }
+    }
+
+    private void writeAccident(Date localDateTime, boolean called_ambulance, boolean called_police, LatLng location,
                                String driverName, String driverId, String carNumber, String insuranceNum, String driverLicenseNum) {
         mKey = mDatabase.child("accidents").push().getKey();
         Accident accident = new Accident(localDateTime, called_ambulance, called_police,
-                                         new DriverData(driverName, driverId, carNumber, insuranceNum, driverLicenseNum));
+                new DriverData(driverName, driverId, carNumber, insuranceNum, driverLicenseNum), location);
+        Log.d(TAG, "The location is: " + location.latitude + ", " + location.longitude);
         Map<String, Object> accidentValues = accident.toMap();
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "No Permission");
+        }
+        else {
+            Location loc = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+            Log.d(TAG, "THE LOCATOIN IS: " + loc);
+        }
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/accidents/" + mKey, accidentValues);
